@@ -1,6 +1,6 @@
 # HANDOFF — état exact du projet
 
-Dernière mise à jour : 2026-10-06 (session locale Windows / VS Code — étape B validée).
+Dernière mise à jour : 2026-10-06 (session locale Windows / VS Code — étape C codée et compilée).
 Ce fichier décrit des **faits vérifiés**. Le mettre à jour à la fin de chaque étape.
 
 ## 1. Résumé
@@ -9,10 +9,11 @@ Ce fichier décrit des **faits vérifiés**. Le mettre à jour à la fin de chaq
   Clone local conseillé : `git clone https://github.com/lucasmettetal/ars-nouveau.git ars-backports`.
 - Phase 1 (analyse du Gauntlet 1.21.1 vs Ars 4.12.7) : **terminée**.
 - Étape A (squelette Forge) : **VALIDÉE** — BUILD SUCCESSFUL le 2026-10-06 (commit `bd6c441`).
-- Étape B (item basique) : **VALIDÉE** — BUILD SUCCESSFUL + `runClient` jusqu'au menu principal le 2026-10-06.
-  Reste à confirmer visuellement en jeu (onglet créatif, texture, noms) : voir §4.
-- Étapes C à G : **non commencées**.
-- Prochaine action : **étape C** (comportement d'outil, §8.2).
+- Étape B (item basique) : **VALIDÉE** (commit `ec13911`) — build OK, `runClient` OK, et **vérifiée en jeu par
+  l'utilisateur** le 2026-10-06 (onglet Ars, texture, noms, pile de 1).
+- Étape C (comportement d'outil) : **codée, BUILD SUCCESSFUL sans avertissement Java** ; tests en jeu **à faire** (§4).
+- Étapes D à G : **non commencées**.
+- Prochaine action : tests en jeu de l'étape C, puis **étape D** (sorts, §8.3).
 
 ## 2. Contenu réel du dépôt
 | Fichier | Rôle |
@@ -23,7 +24,7 @@ Ce fichier décrit des **faits vérifiés**. Le mettre à jour à la fin de chaq
 | `gradlew`, `gradlew.bat`, `gradle/wrapper/*` | wrapper Gradle 8.8 |
 | `src/main/java/fr/lucas/arsbackports/ArsBackports.java` | `@Mod("ars_backports")` ; enregistre `ModItems.ITEMS` sur le bus du mod ; ajoute le Gauntlet à l'onglet Ars via `BuildCreativeModeTabContentsEvent` (`CreativeTabRegistry.BLOCKS`, id `ars_nouveau:general`) |
 | `src/main/java/fr/lucas/arsbackports/registry/ModItems.java` | `DeferredRegister<Item>` (`ForgeRegistries.ITEMS`), `ENCHANTERS_GAUNTLET` = `enchanters_gauntlet` |
-| `src/main/java/fr/lucas/arsbackports/item/EnchantersGauntlet.java` | `extends ModItem` (Ars), `stacksTo(1)` ; aucune logique (outil/sorts/mana à venir) |
+| `src/main/java/fr/lucas/arsbackports/item/EnchantersGauntlet.java` | `extends ModItem` (Ars), `stacksTo(1)` ; comportement d'outil (étape C, voir §3) ; sorts/mana à venir |
 | `src/main/resources/assets/ars_backports/lang/en_us.json` | « Enchanter's Gauntlet » |
 | `src/main/resources/assets/ars_backports/lang/fr_fr.json` | « Gantelet d'enchanteur » (convention d'Ars FR : « Miroir d'enchanteur », « Épée d'enchanteur ») |
 | `src/main/resources/assets/ars_backports/models/item/enchanters_gauntlet.json` | `minecraft:item/handheld`, `layer0` = `ars_backports:item/enchanters_gauntlet` |
@@ -35,10 +36,27 @@ Ce fichier décrit des **faits vérifiés**. Le mettre à jour à la fin de chaq
 | `CLAUDE.md` | instructions permanentes |
 | `BACKPORT_ROADMAP.md` | backports candidats (non commencés) |
 
-Pas encore de recette, de tags, ni de logique d'outil/sort.
+Pas encore de recette, de tags, ni de logique de sort.
 
 ## 3. Dernier résultat de compilation / exécution
-**2026-10-06 — étape B : `gradlew.bat build` → BUILD SUCCESSFUL** ; `gradlew.bat runClient` → client lancé jusqu'au
+**2026-10-06 — étape C : `gradlew.bat build` → BUILD SUCCESSFUL**, 0 avertissement javac
+(`-Xlint:deprecation` désormais activé dans `build.gradle`). Implémentation dans `EnchantersGauntlet` (API vérifiées
+par `javap` dans `forge-1.20.1-47.4.10_mapped_official_1.20.1.jar`) :
+- `getDestroySpeed(stack, state)` : 8.0 si `BlockTags.MINEABLE_WITH_PICKAXE/AXE/SHOVEL/HOE`, 1.5 si `BlockTags.SWORD_EFFICIENT`
+  (**existe bien en 1.20.1**), sinon 1.0.
+- `isCorrectToolForDrops(stack, state)` : tag mineable **ET** `TierSortingRegistry.isCorrectTierForDrops(Tiers.DIAMOND, state)`
+  (même logique que `DiggerItem` patché par Forge → blocs `forge:needs_netherite_tool` refusés).
+- `canPerformAction` : `PICKAXE_DIG, AXE_DIG, SHOVEL_DIG, HOE_DIG, SWORD_DIG, SHEARS_DIG` (pas de labour/écorçage, comme l'officiel).
+- Incassable : aucune durabilité (`Item.Properties` sans `durability`) → `canBeDepleted()` false, jamais endommagé.
+- Enchantements :
+  - `isEnchantable(stack)` → true (le vanilla exige `canBeDepleted()`, donc obligatoire pour un item incassable) ;
+  - `getEnchantmentValue(ItemStack)` → 15 (hook Forge ; la version sans paramètre est dépréciée par Forge.
+    Chaîne vérifiée : `EnchantmentHelper` → `ItemStack.getEnchantmentValue()` → `Item.getEnchantmentValue(ItemStack)`) ;
+  - `canApplyAtEnchantingTable` → `enchantment.category == EnchantmentCategory.DIGGER` (Efficiency, Fortune, Silk Touch ;
+    pas Unbreaking/Mending, catégorie BREAKABLE). Vérifié en bytecode : `Enchantment.canEnchant` (enclume) →
+    `canApplyAtEnchantingTable` → `ItemStack.canApplyAtEnchantingTable` → l'item. Les livres sur l'enclume suivent la même règle.
+
+**Étape B : `gradlew.bat build` → BUILD SUCCESSFUL** ; `gradlew.bat runClient` → client lancé jusqu'au
 **menu principal** (« Forge 47.4.10 / Minecraft 1.20.1 / 7 mods loaded » : minecraft, forge, ars_nouveau, curios,
 geckolib, mixinextras, ars_backports). Aucune erreur/avertissement de modèle ou texture concernant `ars_backports`
 (seuls des warnings internes à Ars sur `magelight_torch`, sans rapport).
@@ -64,11 +82,15 @@ Identité Git configurée au niveau du dépôt : `lucasmettetal <lucas8237014@gm
 Sur un autre PC : n'importe quel JDK 17 + Git suffisent.
 
 ## 4. Blocages / points à vérifier
-1. **Vérification visuelle de l'étape B à faire par l'utilisateur** (non faite par Claude) : créer un monde créatif,
-   onglet Ars Nouveau → Gantelet présent, texture visible, nom EN/FR, pile max 1 ;
-   ou `/give @p ars_backports:enchanters_gauntlet`.
-2. `BlockTags.SWORD_EFFICIENT` : présumé présent en 1.20.1, à vérifier à la compilation de l'étape C.
-3. `runServer` pas encore lancé (nécessitera `eula=true` dans `run-server/eula.txt`).
+1. **Tests en jeu de l'étape C (à faire par l'utilisateur, en survie)** :
+   - pierre, minerais, bois, terre, culture/foin (houe) : minage rapide (≈ outil vitesse 8) et drops corrects ;
+   - obsidienne / minerai de diamant : récoltés (tier diamant) ;
+   - bloc `forge:needs_netherite_tool` (aucun en vanilla 1.20.1 ; test possible avec un mod ou un datapack ajoutant
+     ce tag) : non récolté ;
+   - feuilles / toile d'araignée / herbe : comportement cisaille (drop via `can_tool_perform_action shears_dig`) ;
+   - table d'enchantement : enchantable ; enclume : Efficiency/Fortune/Silk Touch OK, Unbreaking/Mending refusés ;
+   - durabilité : jamais de barre de dégâts.
+2. `runServer` pas encore lancé (nécessitera `eula=true` dans `run-server/eula.txt`).
 
 ## 5. Erreurs connues
 Aucune.
@@ -76,10 +98,10 @@ Aucune.
 ## 6. Prochaines actions exactes
 1. ~~Étape A~~ — **fait**.
 2. ~~Étape B~~ — **fait** (item, registre, onglet Ars, lang, modèle, texture placeholder, runClient OK).
-3. **Étape C (prochaine)** : dans `EnchantersGauntlet` — `getDestroySpeed`, `isCorrectToolForDrops` (tag mineable +
-   `TierSortingRegistry.isCorrectTierForDrops(Tiers.DIAMOND, state)`), `canPerformAction` (6 `ToolActions`),
-   `getEnchantmentValue` 15, `isEnchantable` true, `canApplyAtEnchantingTable` (catégorie DIGGER), incassable. Voir §8.2. Compiler.
-4. Étape D/E : intégration sorts + mana (§8.3). Compiler.
+3. ~~Étape C~~ — **codée et compilée** ; tests en jeu à confirmer (§4.1).
+4. **Étape D (prochaine)** : lire `EnchantersMirror` 4.12.7 (jar `ars_nouveau-1.20.1-4.12.7.264`), puis implémenter
+   `ICasterTool` (inscription Scribes Table sans forme, préfixe `MethodTouch.INSTANCE`, `use()` → `castSpell`). §8.3. Compiler.
+   Étape E : `IManaDiscountEquipment` (25 %). Compiler.
 5. Étape F : tooltip, recette Enchanting Apparatus (§8.5). Compiler.
 6. Étape G : checklist de test en jeu, serveur dédié.
 
