@@ -4,6 +4,8 @@ Dernière mise à jour : 2026-10-06 (session cloud Claude Code initiale).
 Ce fichier décrit des **faits vérifiés**. Le mettre à jour à la fin de chaque étape.
 
 ## 1. Résumé
+- Dépôt GitHub : `lucasmettetal/ars-nouveau`, branche `main` (choix de l'utilisateur, `ars-backports` n'étant pas accessible).
+  Ce dépôt contient l'addon Ars Backports, **pas** Ars Nouveau. Il pourra être renommé `ars-backports` sur GitHub.
 - Phase 1 (analyse du Gauntlet 1.21.1 vs Ars 4.12.7) : **terminée**.
 - Étape A (squelette Forge) : **fichiers écrits, JAMAIS compilés** (dépôts Maven bloqués par le proxy cloud).
 - Étapes B à G : **non commencées**.
