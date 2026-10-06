@@ -57,9 +57,10 @@ Windows :
 Linux/macOS : `./gradlew build` (etc.).
 
 Le jar se trouve dans `build/libs/`. Pour `runClient`/`runServer` en dev, les dépendances
-runtime d'Ars Nouveau (GeckoLib, Curios) devront être ajoutées en `runtimeOnly` (pas encore fait).
+runtime d'Ars Nouveau (Curios, GeckoLib, MixinExtras) sont en `runtimeOnly` (dev uniquement, jamais dans `mods.toml`).
 
 ## Dépôts Maven nécessaires au build
 `maven.minecraftforge.net`, `maven.blamejared.com` (Ars Nouveau), `libraries.minecraft.net`,
 `piston-meta.mojang.com`, `piston-data.mojang.com`, `plugins.gradle.org`, `services.gradle.org`,
-`repo.maven.apache.org` (+ `resources.download.minecraft.net` pour runClient).
+`repo.maven.apache.org` (+ `resources.download.minecraft.net` pour runClient),
+`maven.theillusivec4.top` (Curios), `dl.cloudsmith.io` (GeckoLib) pour les runs de dev.
