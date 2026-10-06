@@ -1,22 +1,23 @@
 # HANDOFF — état exact du projet
 
-Dernière mise à jour : 2026-10-06 (session cloud Claude Code initiale).
+Dernière mise à jour : 2026-10-06 (session locale Windows / VS Code — étape A validée).
 Ce fichier décrit des **faits vérifiés**. Le mettre à jour à la fin de chaque étape.
 
 ## 1. Résumé
 - Dépôt GitHub : `lucasmettetal/ars-nouveau`, branche `main` (choix de l'utilisateur, `ars-backports` n'étant pas accessible).
   Ce dépôt contient l'addon Ars Backports, **pas** Ars Nouveau. Il pourra être renommé `ars-backports` sur GitHub.
+  Clone local conseillé : `git clone https://github.com/lucasmettetal/ars-nouveau.git ars-backports`.
 - Phase 1 (analyse du Gauntlet 1.21.1 vs Ars 4.12.7) : **terminée**.
-- Étape A (squelette Forge) : **fichiers écrits, JAMAIS compilés** (dépôts Maven bloqués par le proxy cloud).
+- Étape A (squelette Forge) : **VALIDÉE — BUILD SUCCESSFUL le 2026-10-06** (voir §3).
 - Étapes B à G : **non commencées**.
-- Prochaine action : compiler l'étape A sur une machine ayant accès aux dépôts Maven (voir §6).
+- Prochaine action : **étape B** (item `enchanters_gauntlet` basique, voir §6).
 
 ## 2. Contenu réel du dépôt
 | Fichier | Rôle |
 |---|---|
 | `settings.gradle` | dépôts de plugins (Gradle Plugin Portal, maven.minecraftforge.net), plugin foojay (auto-téléchargement JDK 17), `rootProject.name = 'ars_backports'` |
 | `build.gradle` | ForgeGradle `[6.0,6.2)`, toolchain Java 17, mappings officiels, runs client/server, dépôt BlameJared (groupe `com.hollingsworth.ars_nouveau` uniquement), dépendance `fg.deobf("com.hollingsworth.ars_nouveau:ars_nouveau-1.20.1:${ars_version}")`, expansion de `mods.toml` |
-| `gradle.properties` | versions : MC 1.20.1, Forge 47.4.10 (range `[47.4,)`), Ars `4.12.7.+` (range de chargement `[4.12.7,)`), modid, licence `LGPL-3.0-only`, version 0.1.0 |
+| `gradle.properties` | versions : MC 1.20.1, Forge 47.4.10 (range `[47.4,)`), Ars `4.12.7.264` (range de chargement `[4.12.7,)`), modid, licence `LGPL-3.0-only`, version 0.1.0 |
 | `gradlew`, `gradlew.bat`, `gradle/wrapper/*` | wrapper Gradle 8.8 (généré avec la distribution officielle 8.8) |
 | `src/main/java/fr/lucas/arsbackports/ArsBackports.java` | classe `@Mod("ars_backports")`, constructeur `ArsBackports(FMLJavaModLoadingContext)`, log uniquement |
 | `src/main/resources/META-INF/mods.toml` | dépendances obligatoires : forge, minecraft, `ars_nouveau` (`ordering="AFTER"`, `side="BOTH"`) |
@@ -29,36 +30,44 @@ Ce fichier décrit des **faits vérifiés**. Le mettre à jour à la fin de chaq
 Aucun item, aucune texture, aucune recette n'existe encore.
 
 ## 3. Dernier résultat de compilation
-`./gradlew build` (Gradle 8.8, JDK 17 présent) dans le conteneur cloud :
+**2026-10-06 — `gradlew.bat build` → BUILD SUCCESSFUL** (3 min 50 au premier lancement, caches vides),
+sur Windows 10 LTSC, en local :
+- Java réellement utilisé : **Temurin 17.0.20.1+1** (Eclipse Adoptium), amd64. Le toolchain Java 17 est satisfait
+  directement par ce JDK (foojay n'a rien téléchargé).
+- Gradle 8.8 (wrapper), ForgeGradle résolu : **6.0.54**.
+- Forge **1.20.1-47.4.10**, mappings `official` 1.20.1.
+- Ars Nouveau résolu : **`com.hollingsworth.ars_nouveau:ars_nouveau-1.20.1:4.12.7.264`** (seule build 4.12.7
+  publiée sur `maven.blamejared.com`, vérifié dans `maven-metadata.xml` ; `latest` = 4.12.7.264).
+- Jar produit : `build/libs/ars_backports-1.20.1-0.1.0.jar` (2,2 Ko : `ArsBackports.class`, `mods.toml` expansé
+  correctement, `pack.mcmeta`, manifest).
+- Corrections nécessaires : **une seule** — `ars_version=4.12.7.+` remplacé par `4.12.7.264` (reproductibilité).
+  Aucun changement de code ni de build.gradle. Le constructeur `@Mod(FMLJavaModLoadingContext)` compile avec 47.4.10.
+- Seul avertissement : « Deprecated Gradle features … incompatible with Gradle 9.0 » (provient de ForgeGradle, sans impact).
 
-    Plugin [id: 'net.minecraftforge.gradle', version: '[6.0,6.2)'] was not found in any of the following sources:
-      Searched in: Gradle Central Plugin Repository, MinecraftForge(https://maven.minecraftforge.net/)
-    BUILD FAILED
+Historique : en session cloud, le build échouait uniquement parce que le proxy bloquait les dépôts Maven.
 
-Cause : le proxy réseau de l'environnement cloud refusait (403) `maven.minecraftforge.net`,
-`maven.blamejared.com`, `libraries.minecraft.net`, `piston-meta.mojang.com`, `piston-data.mojang.com`,
-`maven.parchmentmc.org`, etc. Seuls `services.gradle.org`, `plugins.gradle.org` et `repo.maven.apache.org`
-répondaient. **Ce n'est pas une erreur du code** ; le build n'a simplement jamais pu s'exécuter.
+### Environnement local de la machine Windows (PC « lucas »)
+La machine n'avait ni Git ni Java ni winget. Installés en **portable**, sans droits admin, dans `C:\Users\lucas\tools\` :
+- `tools\git\` : PortableGit 2.56.0.2 (inclut Git Credential Manager pour `git push`) ;
+- `tools\jdk-17.0.20.1+1\` : Temurin JDK 17 (checksum SHA-256 vérifié).
+`Path` **utilisateur** complété avec `tools\git\cmd` et `tools\jdk-17.0.20.1+1\bin`, `JAVA_HOME` utilisateur défini.
+(Redémarrer VS Code pour qu'il voie ces variables.) Sur un autre PC : n'importe quel JDK 17 + Git suffisent.
 
 ## 4. Blocages / points à vérifier
-1. Compiler l'étape A (aucune vérification réelle n'a encore eu lieu).
-2. `ars_version=4.12.7.+` : Ars publie sur BlameJared en `4.12.7.<build CI>`. Le numéro exact n'a pas pu être
-   lu (maven-metadata inaccessible). Vérifier qu'il se résout, puis fixer la version exacte.
-3. Constructeur `@Mod` avec `FMLJavaModLoadingContext` : utilisé par le MDK Forge 1.20.1 actuel ; d'où la
-   contrainte Forge `[47.4,)`. À confirmer à la compilation.
-4. `BlockTags.SWORD_EFFICIENT` : présumé présent en 1.20.1, non vérifié dans un jar.
-5. Dev runs (`runClient`/`runServer`) : il faudra ajouter GeckoLib et Curios en `runtimeOnly`
-   (dépendances obligatoires d'Ars 4.12.7 : `curios [1.19-5.0.7.1,)`, `geckolib [4.2.1,)`), dépôts
+1. `BlockTags.SWORD_EFFICIENT` : présumé présent en 1.20.1, à vérifier à la compilation de l'étape C.
+2. Dev runs (`runClient`/`runServer`) : non encore lancés. Il faudra probablement ajouter GeckoLib et Curios en
+   `runtimeOnly` (dépendances obligatoires d'Ars 4.12.7 : `curios [1.19-5.0.7.1,)`, `geckolib [4.2.1,)`), dépôts
    `dl.cloudsmith.io/public/geckolib3/geckolib/maven/` et `maven.theillusivec4.top`. Pas de dépendance du mod.
 
 ## 5. Erreurs connues
-Aucune erreur de code connue (le code n'a jamais été compilé).
+Aucune.
 
 ## 6. Prochaines actions exactes
-1. `gradlew.bat build` → doit produire `build/libs/ars_backports-1.20.1-0.1.0.jar`. Corriger toute erreur à la racine.
-2. Fixer `ars_version` sur la version exacte résolue.
-3. Étape B : `ModItems` (DeferredRegister) + item `enchanters_gauntlet` basique (`stacksTo(1)`), lang en_us/fr_fr,
-   onglet créatif d'Ars (`CreativeTabRegistry.BLOCKS`, id `ars_nouveau:general`) via `BuildCreativeModeTabContentsEvent`. Compiler.
+1. ~~Étape A : build~~ — **fait** (2026-10-06).
+2. ~~Fixer `ars_version`~~ — **fait** (`4.12.7.264`).
+3. **Étape B (prochaine)** : `ModItems` (DeferredRegister) + item `enchanters_gauntlet` basique (`stacksTo(1)`), lang en_us/fr_fr,
+   texture placeholder + modèle JSON `item/generated`, onglet créatif d'Ars (`CreativeTabRegistry.BLOCKS`, id `ars_nouveau:general`)
+   via `BuildCreativeModeTabContentsEvent`. Compiler, puis `runClient` (ajouter Curios/GeckoLib en runtimeOnly si nécessaire).
 4. Étape C : outil (§8.2). Compiler.
 5. Étape D/E : intégration sorts + mana (§8.3). Compiler.
 6. Étape F : modèle JSON vanilla, texture placeholder, tooltip, recette (§8.5). Compiler.
