@@ -4,9 +4,9 @@ Dernière mise à jour : 2026-10-09 (session locale Windows / VS Code — Gauntl
 Ce fichier décrit des **faits vérifiés**. Le mettre à jour à la fin de chaque étape.
 
 ## 1. Résumé
-- Dépôt GitHub : `lucasmettetal/ars-nouveau`, branche `main`. Contient l'addon Ars Backports, **pas** Ars Nouveau.
-  L'utilisateur envisage de le renommer `ars-backports` (GitHub redirige l'ancienne URL ; mettre `origin` à jour ensuite).
-  Clone local conseillé : `git clone https://github.com/lucasmettetal/ars-nouveau.git ars-backports`.
+- Dépôt GitHub : **`lucasmettetal/ars-backports`** (renommé depuis `ars-nouveau` le 2026-10-09 ; l'ancienne URL
+  redirige), branche `main`. Sur un clone existant : `git remote set-url origin https://github.com/lucasmettetal/ars-backports.git`.
+  Nouveau clone : `git clone https://github.com/lucasmettetal/ars-backports.git`.
 - Enchanter's Gauntlet :
   - A (squelette) : **validée** (`bd6c441`).
   - B (item, onglet, lang, modèle, texture) : **validée et vérifiée en jeu par l'utilisateur** (`ec13911`).
