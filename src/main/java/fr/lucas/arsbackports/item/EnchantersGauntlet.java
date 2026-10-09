@@ -1,6 +1,7 @@
 package fr.lucas.arsbackports.item;
 
 import com.hollingsworth.arsnouveau.api.item.ICasterTool;
+import com.hollingsworth.arsnouveau.api.mana.IManaDiscountEquipment;
 import com.hollingsworth.arsnouveau.api.spell.AbstractCastMethod;
 import com.hollingsworth.arsnouveau.api.spell.AbstractSpellPart;
 import com.hollingsworth.arsnouveau.api.spell.ISpellCaster;
@@ -38,12 +39,13 @@ import java.util.Set;
  * the diamond tier is really enforced through {@link TierSortingRegistry}.
  * The item has no durability (no max damage), so it is unbreakable.
  */
-public class EnchantersGauntlet extends ModItem implements ICasterTool {
+public class EnchantersGauntlet extends ModItem implements ICasterTool, IManaDiscountEquipment {
     private static final String INVALID_SPELL_KEY = "ars_backports.gauntlet.invalid";
 
     private static final float MINEABLE_SPEED = 8.0F;
     private static final float SWORD_EFFICIENT_SPEED = 1.5F;
     private static final int ENCHANTMENT_VALUE = 15;
+    private static final double MANA_DISCOUNT = 0.25;
 
     private static final Set<ToolAction> TOOL_ACTIONS = Set.of(
             ToolActions.PICKAXE_DIG, ToolActions.AXE_DIG, ToolActions.SHOVEL_DIG,
@@ -58,6 +60,12 @@ public class EnchantersGauntlet extends ModItem implements ICasterTool {
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         ISpellCaster caster = getSpellCaster(player.getItemInHand(hand));
         return caster.castSpell(level, player, hand, Component.translatable(INVALID_SPELL_KEY), caster.getSpell());
+    }
+
+    // 25 % of the full spell cost (Touch included), added by ManaUtil to armor/curio discounts: Touch + Break = 15 -> 12.
+    @Override
+    public int getManaDiscount(ItemStack stack, Spell spell) {
+        return (int) (spell.getCost() * MANA_DISCOUNT);
     }
 
     @Override
