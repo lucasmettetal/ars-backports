@@ -16,8 +16,11 @@ Ce fichier décrit des **faits vérifiés**. Le mettre à jour à la fin de chaq
   - F (tooltip + recette Enchanting Apparatus) : **codée et compilée** (`3b5596d`) ; serveur dédié démarré sans erreur.
   - G (tests) : **checklist rédigée dans `TESTS.md`** ; tests en jeu C à F **pas encore faits**.
 - Assets : texture placeholder originale. Message de demande d'autorisation (anglais) rédigé le 2026-10-09 pour le
-  salon « Addon Discussion & Help » du Discord d'Ars ; envoi par l'utilisateur **non confirmé**, aucune réponse connue.
-  Règles de ce Discord : anglais uniquement, pas de DM ni de mention sans permission, pas de cross-posting.
+  Discord d'Ars. Premier envoi (2026-10-09) dans « Addon Discussion & Help » : **mauvais salon** (réservé à certains
+  addons) ; un membre a conseillé **« General & Development Help »** (ou `general-and-help`) et de poster quand
+  l'équipe (heure américaine) est réveillée → viser 17h–19h heure française. Aucune réponse sur le fond pour l'instant.
+  Règles de ce Discord : anglais uniquement, pas de DM ni de mention sans permission, pas de cross-posting
+  (supprimer l'ancien message avant de reposter).
 - Suite **proposée** (voir `BACKPORT_ROADMAP.md`, l'utilisateur a dit « tu peux continuer » sans valider l'ordre en détail) :
   finir/tester le Gauntlet, puis Mob Jar (Sniffer, Chat, Golem de neige), Enchanter's Fishing Rod, glyphes Pantomime
   puis Bubble. **Exclus par l'utilisateur** : ce qui est trop compliqué, comme la nouvelle dimension (Planarium).
