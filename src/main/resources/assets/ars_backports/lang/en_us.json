@@ -1,3 +1,4 @@
 {
-  "item.ars_backports.enchanters_gauntlet": "Enchanter's Gauntlet"
+  "item.ars_backports.enchanters_gauntlet": "Enchanter's Gauntlet",
+  "ars_backports.gauntlet.invalid": "Invalid spell. Gauntlets accept Effects and Augments only."
 }

@@ -1,3 +1,4 @@
 {
-  "item.ars_backports.enchanters_gauntlet": "Gantelet d'enchanteur"
+  "item.ars_backports.enchanters_gauntlet": "Gantelet d'enchanteur",
+  "ars_backports.gauntlet.invalid": "Sort invalide. Les Gantelets n'acceptent que les Effets et les Améliorations."
 }
