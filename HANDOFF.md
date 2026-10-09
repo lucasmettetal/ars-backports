@@ -1,109 +1,101 @@
 # HANDOFF — état exact du projet
 
-Dernière mise à jour : 2026-10-06 (session locale Windows / VS Code — étape C codée et compilée).
+Dernière mise à jour : 2026-10-09 (session locale Windows / VS Code — Gauntlet étapes D, E, F codées, G rédigée).
 Ce fichier décrit des **faits vérifiés**. Le mettre à jour à la fin de chaque étape.
 
 ## 1. Résumé
-- Dépôt GitHub : `lucasmettetal/ars-nouveau`, branche `main` (choix de l'utilisateur, `ars-backports` n'étant pas accessible).
-  Ce dépôt contient l'addon Ars Backports, **pas** Ars Nouveau. Il pourra être renommé `ars-backports` sur GitHub.
+- Dépôt GitHub : `lucasmettetal/ars-nouveau`, branche `main`. Contient l'addon Ars Backports, **pas** Ars Nouveau.
+  L'utilisateur envisage de le renommer `ars-backports` (GitHub redirige l'ancienne URL ; mettre `origin` à jour ensuite).
   Clone local conseillé : `git clone https://github.com/lucasmettetal/ars-nouveau.git ars-backports`.
-- Phase 1 (analyse du Gauntlet 1.21.1 vs Ars 4.12.7) : **terminée**.
-- Étape A (squelette Forge) : **VALIDÉE** — BUILD SUCCESSFUL le 2026-10-06 (commit `bd6c441`).
-- Étape B (item basique) : **VALIDÉE** (commit `ec13911`) — build OK, `runClient` OK, et **vérifiée en jeu par
-  l'utilisateur** le 2026-10-06 (onglet Ars, texture, noms, pile de 1).
-- Étape C (comportement d'outil) : **codée, BUILD SUCCESSFUL sans avertissement Java** ; tests en jeu **à faire** (§4).
-- Étapes D à G : **non commencées**.
-- Prochaine action : tests en jeu de l'étape C, puis **étape D** (sorts, §8.3).
+- Enchanter's Gauntlet :
+  - A (squelette) : **validée** (`bd6c441`).
+  - B (item, onglet, lang, modèle, texture) : **validée et vérifiée en jeu par l'utilisateur** (`ec13911`).
+  - C (outil) : **codée et compilée** (`1cabc30`). Tests détaillés : `TESTS.md` 6–12.
+  - D (sorts) : **codée et compilée** (`f87e8cd`).
+  - E (réduction de mana 25 %) : **codée et compilée** (`50053c3`).
+  - F (tooltip + recette Enchanting Apparatus) : **codée et compilée** (`3b5596d`) ; serveur dédié démarré sans erreur.
+  - G (tests) : **checklist rédigée dans `TESTS.md`** ; tests en jeu C à F **pas encore faits**.
+- Assets : texture placeholder originale. Message de demande d'autorisation (anglais) rédigé le 2026-10-09 pour le
+  salon « Addon Discussion & Help » du Discord d'Ars ; envoi par l'utilisateur **non confirmé**, aucune réponse connue.
+  Règles de ce Discord : anglais uniquement, pas de DM ni de mention sans permission, pas de cross-posting.
+- Suite **proposée** (voir `BACKPORT_ROADMAP.md`, l'utilisateur a dit « tu peux continuer » sans valider l'ordre en détail) :
+  finir/tester le Gauntlet, puis Mob Jar (Sniffer, Chat, Golem de neige), Enchanter's Fishing Rod, glyphes Pantomime
+  puis Bubble. **Exclus par l'utilisateur** : ce qui est trop compliqué, comme la nouvelle dimension (Planarium).
 
 ## 2. Contenu réel du dépôt
 | Fichier | Rôle |
 |---|---|
-| `settings.gradle` | dépôts de plugins (Gradle Plugin Portal, maven.minecraftforge.net), plugin foojay (auto-téléchargement JDK 17), `rootProject.name = 'ars_backports'` |
-| `build.gradle` | ForgeGradle `[6.0,6.2)`, toolchain Java 17, mappings officiels, runs client/server (+ remap des refmaps mixin), dépôts BlameJared / Maven Central / Curios / GeckoLib (filtrés par groupe), Ars en `implementation`, Curios + GeckoLib + MixinExtras en `runtimeOnly`, expansion de `mods.toml` |
-| `gradle.properties` | versions : MC 1.20.1, Forge 47.4.10 (range `[47.4,)`), Ars `4.12.7.264` (range `[4.12.7,)`), runtime dev : Curios `5.14.1+1.20.1`, GeckoLib `4.8.4`, MixinExtras `0.4.1` ; modid, licence `LGPL-3.0-only`, version 0.1.0 |
-| `gradlew`, `gradlew.bat`, `gradle/wrapper/*` | wrapper Gradle 8.8 |
-| `src/main/java/fr/lucas/arsbackports/ArsBackports.java` | `@Mod("ars_backports")` ; enregistre `ModItems.ITEMS` sur le bus du mod ; ajoute le Gauntlet à l'onglet Ars via `BuildCreativeModeTabContentsEvent` (`CreativeTabRegistry.BLOCKS`, id `ars_nouveau:general`) |
-| `src/main/java/fr/lucas/arsbackports/registry/ModItems.java` | `DeferredRegister<Item>` (`ForgeRegistries.ITEMS`), `ENCHANTERS_GAUNTLET` = `enchanters_gauntlet` |
-| `src/main/java/fr/lucas/arsbackports/item/EnchantersGauntlet.java` | `extends ModItem` (Ars), `stacksTo(1)` ; comportement d'outil (étape C, voir §3) ; sorts/mana à venir |
-| `src/main/resources/assets/ars_backports/lang/en_us.json` | « Enchanter's Gauntlet » |
-| `src/main/resources/assets/ars_backports/lang/fr_fr.json` | « Gantelet d'enchanteur » (convention d'Ars FR : « Miroir d'enchanteur », « Épée d'enchanteur ») |
-| `src/main/resources/assets/ars_backports/models/item/enchanters_gauntlet.json` | `minecraft:item/handheld`, `layer0` = `ars_backports:item/enchanters_gauntlet` |
-| `src/main/resources/assets/ars_backports/textures/item/enchanters_gauntlet.png` | placeholder **original** 16×16 (gant brun, gemme violette, manchette dorée), généré pixel par pixel ; aucun asset Ars |
-| `src/main/resources/META-INF/mods.toml` | dépendances obligatoires : forge, minecraft, `ars_nouveau` (`ordering="AFTER"`, `side="BOTH"`) |
-| `src/main/resources/pack.mcmeta` | `pack_format` 15 (1.20.1) |
-| `LICENSE` | texte LGPLv3 |
-| `.gitignore`, `.gitattributes` | repris du MDK Forge 1.20.1 (+ `run-data`, `run-server`) ; `build/`, `.gradle/`, `run/` ignorés |
-| `CLAUDE.md` | instructions permanentes |
-| `BACKPORT_ROADMAP.md` | backports candidats (non commencés) |
-
-Pas encore de recette, de tags, ni de logique de sort.
+| `settings.gradle` | dépôts de plugins, plugin foojay, `rootProject.name = 'ars_backports'` |
+| `build.gradle` | ForgeGradle `[6.0,6.2)` (6.0.54), toolchain Java 17, mappings officiels, runs client/server (+ remap des refmaps mixin), dépôts BlameJared / Maven Central / Curios / GeckoLib filtrés par groupe, Ars en `implementation`, Curios + GeckoLib + MixinExtras en `runtimeOnly`, `-Xlint:deprecation` |
+| `gradle.properties` | MC 1.20.1, Forge 47.4.10 (`[47.4,)`), Ars `4.12.7.264` (`[4.12.7,)`), dev : Curios `5.14.1+1.20.1`, GeckoLib `4.8.4`, MixinExtras `0.4.1` ; modid, `LGPL-3.0-only`, version 0.1.0 |
+| `src/main/java/fr/lucas/arsbackports/ArsBackports.java` | `@Mod` ; enregistre `ModItems.ITEMS` ; ajoute le Gauntlet à l'onglet Ars (`CreativeTabRegistry.BLOCKS`, `ars_nouveau:general`) |
+| `src/main/java/fr/lucas/arsbackports/registry/ModItems.java` | `DeferredRegister<Item>`, `ENCHANTERS_GAUNTLET` |
+| `src/main/java/fr/lucas/arsbackports/item/EnchantersGauntlet.java` | `ModItem implements ICasterTool, IManaDiscountEquipment` : outil (C), sorts (D), mana (E), tooltip (F) — détail §3 |
+| `src/main/resources/assets/ars_backports/lang/en_us.json`, `fr_fr.json` | nom de l'item + `ars_backports.gauntlet.invalid` (texte officiel 1.21 / tournure FR du Miroir d'Ars) |
+| `src/main/resources/assets/ars_backports/models/item/enchanters_gauntlet.json` | `minecraft:item/handheld` |
+| `src/main/resources/assets/ars_backports/textures/item/enchanters_gauntlet.png` | placeholder original 16×16 |
+| `src/main/resources/data/ars_backports/recipes/enchanters_gauntlet.json` | recette Enchanting Apparatus (format 4.12.7) |
+| `src/main/resources/META-INF/mods.toml`, `pack.mcmeta` | dépendances forge/minecraft/ars_nouveau ; pack_format 15 |
+| `TESTS.md` | checklist de 36 tests (+ refus d'enchantements, incassable, cisailles) avec procédures |
+| `CLAUDE.md`, `HANDOFF.md`, `BACKPORT_ROADMAP.md` | mémoire du projet |
 
 ## 3. Dernier résultat de compilation / exécution
-**2026-10-06 — étape C : `gradlew.bat build` → BUILD SUCCESSFUL**, 0 avertissement javac
-(`-Xlint:deprecation` désormais activé dans `build.gradle`). Implémentation dans `EnchantersGauntlet` (API vérifiées
-par `javap` dans `forge-1.20.1-47.4.10_mapped_official_1.20.1.jar`) :
-- `getDestroySpeed(stack, state)` : 8.0 si `BlockTags.MINEABLE_WITH_PICKAXE/AXE/SHOVEL/HOE`, 1.5 si `BlockTags.SWORD_EFFICIENT`
-  (**existe bien en 1.20.1**), sinon 1.0.
-- `isCorrectToolForDrops(stack, state)` : tag mineable **ET** `TierSortingRegistry.isCorrectTierForDrops(Tiers.DIAMOND, state)`
-  (même logique que `DiggerItem` patché par Forge → blocs `forge:needs_netherite_tool` refusés).
-- `canPerformAction` : `PICKAXE_DIG, AXE_DIG, SHOVEL_DIG, HOE_DIG, SWORD_DIG, SHEARS_DIG` (pas de labour/écorçage, comme l'officiel).
-- Incassable : aucune durabilité (`Item.Properties` sans `durability`) → `canBeDepleted()` false, jamais endommagé.
-- Enchantements :
-  - `isEnchantable(stack)` → true (le vanilla exige `canBeDepleted()`, donc obligatoire pour un item incassable) ;
-  - `getEnchantmentValue(ItemStack)` → 15 (hook Forge ; la version sans paramètre est dépréciée par Forge.
-    Chaîne vérifiée : `EnchantmentHelper` → `ItemStack.getEnchantmentValue()` → `Item.getEnchantmentValue(ItemStack)`) ;
-  - `canApplyAtEnchantingTable` → `enchantment.category == EnchantmentCategory.DIGGER` (Efficiency, Fortune, Silk Touch ;
-    pas Unbreaking/Mending, catégorie BREAKABLE). Vérifié en bytecode : `Enchantment.canEnchant` (enclume) →
-    `canApplyAtEnchantingTable` → `ItemStack.canApplyAtEnchantingTable` → l'item. Les livres sur l'enclume suivent la même règle.
+**2026-10-09 — `gradlew.bat build` → BUILD SUCCESSFUL** après chacune des étapes D, E, F, 0 avertissement javac.
+**`gradlew.bat runServer` (serveur dédié)** : `Done (29.868s)!`, aucun crash, aucune classe client chargée,
+aucune erreur « Parsing error loading recipe » (seuls messages : création des configs au premier lancement).
+`run-server/eula.txt` créé avec `eula=true` (dossier ignoré par Git).
 
-**Étape B : `gradlew.bat build` → BUILD SUCCESSFUL** ; `gradlew.bat runClient` → client lancé jusqu'au
-**menu principal** (« Forge 47.4.10 / Minecraft 1.20.1 / 7 mods loaded » : minecraft, forge, ars_nouveau, curios,
-geckolib, mixinextras, ars_backports). Aucune erreur/avertissement de modèle ou texture concernant `ars_backports`
-(seuls des warnings internes à Ars sur `magelight_torch`, sans rapport).
+Implémentation (API lues dans les sources Ars branche `1.20` @ `2c74064` et vérifiées dans le jar 4.12.7.264) :
+- **D — sorts** (calqué sur `EnchantersMirror` 4.12.7) :
+  - `use()` → `caster.castSpell(level, player, hand, Component.translatable("ars_backports.gauntlet.invalid"), caster.getSpell())`.
+    `ISpellCaster.castSpell` 4.12.7 fait déjà : retour `pass` côté client, sort invalide → message, raytrace
+    `0.5 + player.getBlockReach()`, Scribes Table ignorée, BlockEntity ignoré sans sneak (sauf tag `IGNORE_TILE`),
+    entité vivante → `onCastOnEntity`, bloc → `onCastOnBlock`, sinon `onCast`. Rien n'est réimplémenté.
+  - `isScribedSpellValid` : aucune `AbstractCastMethod` dans `spell.recipe`.
+  - `setSpell` : **nouvelle** liste `[MethodTouch.INSTANCE] + spell.recipe`, appliquée à `spell.clone().setRecipe(...)`
+    (le sort lu dans le livre n'est pas modifié, contrairement au Miroir) puis `ICasterTool.super.setSpell`.
+  - `sendInvalidMessage` : `PortUtil.sendMessageNoSpam`. Inscription via `ICasterTool.onScribe` (Scribes Table, sneak),
+    qui copie aussi couleur/nom/son du livre. Stockage : `SpellCaster` NBT (`ars_nouveau:caster`), 1 slot.
+  - Clé de langue propre `ars_backports.gauntlet.invalid` (`ars_nouveau.gauntlet.invalid` n'existe pas en 4.12.7).
+- **E — mana** : `IManaDiscountEquipment.getManaDiscount(stack, spell)` = `(int) (spell.getCost() * 0.25)`.
+  `ManaUtil.getPlayerDiscounts` additionne curios + armure + objet lanceur (`casterStack`). Touch + Break : 15 → 12.
+  Mana insuffisant / créatif gérés par `SpellResolver.enoughMana` (en créatif : lancement autorisé, mana tout de même retiré).
+- **F — tooltip** : comme le 1.21 et les casters 4.12.7 (`CasterTome`, `SpellParchment`) : `getTooltipImage` →
+  `new SpellTooltip(caster)` si `Config.GLYPH_TOOLTIPS` et sans Shift ; `appendHoverText` → `getInformation` (texte)
+  avec Shift ou si les glyphes sont désactivés. `SpellTooltip` est un record commun ; son rendu est enregistré par Ars.
+  `Screen.hasShiftDown()` n'est appelé que dans des méthodes exécutées côté client (même schéma qu'Ars ; serveur dédié OK).
+  Barre de mana : fournie par `ICasterTool` (`IDisplayMana.shouldDisplay` = true).
+- **F — recette** : `ars_nouveau:enchanting_apparatus`, reagent `[{"tag":"forge:leather"}]`, pedestals
+  `forge:gems/diamond`, 2× `forge:storage_blocks/gold`, 2× `forge:storage_blocks/source`, `sourceCost` 0,
+  `keepNbtOfReagent` true. Tags vérifiés dans les jars Forge 47.4.10 et Ars 4.12.7.264.
+- **C — outil** (rappel) : vitesse 8.0 (mineable pickaxe/axe/shovel/hoe), 1.5 (`SWORD_EFFICIENT`), 1.0 ; drops si tag
+  mineable ET `TierSortingRegistry.isCorrectTierForDrops(Tiers.DIAMOND, state)` ; 6 `ToolActions` `_DIG` ; incassable ;
+  `isEnchantable` true ; `getEnchantmentValue(ItemStack)` 15 ; `canApplyAtEnchantingTable` → catégorie `DIGGER`.
 
-Corrections nécessaires pour `runClient` (dev uniquement, aucun effet sur le jar ni sur `mods.toml`) :
-1. Curios 5.14.1+1.20.1 et GeckoLib 4.8.4 en `runtimeOnly fg.deobf(...)` (dépendances obligatoires d'Ars).
-2. `NoClassDefFoundError: com/llamalad7/mixinextras/MixinExtrasBootstrap` : Ars intègre MixinExtras par jarJar dans
-   ses jars de release, mais **son jar Maven ne le contient pas** → `runtimeOnly "io.github.llamalad7:mixinextras-forge:0.4.1"`
-   (Maven Central ; Ars exige `[0.2.0-beta.8,)`).
-3. `InvalidAccessorException` sur `curios.mixins.json:AccessorEntity` : refmaps SRG non remappés en dev →
-   propriétés de run du MDK Forge `mixin.env.remapRefMap=true` + `mixin.env.refMapRemappingFile=build/createSrgToMcp/output.srg`.
+Corrections de dev (étape B) : Curios/GeckoLib/MixinExtras en `runtimeOnly` (le jar Maven d'Ars n'embarque pas
+MixinExtras) ; propriétés `mixin.env.remapRefMap` / `refMapRemappingFile` pour les mixins des dépendances en dev.
 
-Étape A (rappel) : Java **Temurin 17.0.20.1+1**, Gradle 8.8, ForgeGradle **6.0.54**, Forge **1.20.1-47.4.10**,
-Ars **`com.hollingsworth.ars_nouveau:ars_nouveau-1.20.1:4.12.7.264`** (seule build 4.12.7 publiée sur BlameJared).
-Avertissement persistant sans impact : « Deprecated Gradle features … incompatible with Gradle 9.0 » (ForgeGradle).
+Environnement : Java **Temurin 17.0.20.1+1**, Gradle 8.8, ForgeGradle 6.0.54, Forge 1.20.1-47.4.10,
+Ars `com.hollingsworth.ars_nouveau:ars_nouveau-1.20.1:4.12.7.264`.
 
 ### Environnement local de la machine Windows (PC « lucas »)
-La machine n'avait ni Git ni Java ni winget. Installés en **portable**, sans droits admin, dans `C:\Users\lucas\tools\` :
-- `tools\git\` : PortableGit 2.56.0.2 (inclut Git Credential Manager pour `git push`) ;
-- `tools\jdk-17.0.20.1+1\` : Temurin JDK 17 (checksum SHA-256 vérifié).
-`Path` **utilisateur** complété avec `tools\git\cmd` et `tools\jdk-17.0.20.1+1\bin`, `JAVA_HOME` utilisateur défini.
-Identité Git configurée au niveau du dépôt : `lucasmettetal <lucas8237014@gmail.com>`.
+Git et JDK installés en **portable** dans `C:\Users\lucas\tools\` (PortableGit 2.56.0.2, Temurin 17.0.20.1) ;
+`Path` et `JAVA_HOME` **utilisateur** mis à jour. Identité Git du dépôt : `lucasmettetal <lucas8237014@gmail.com>`.
 Sur un autre PC : n'importe quel JDK 17 + Git suffisent.
 
 ## 4. Blocages / points à vérifier
-1. **Tests en jeu de l'étape C (à faire par l'utilisateur, en survie)** :
-   - pierre, minerais, bois, terre, culture/foin (houe) : minage rapide (≈ outil vitesse 8) et drops corrects ;
-   - obsidienne / minerai de diamant : récoltés (tier diamant) ;
-   - bloc `forge:needs_netherite_tool` (aucun en vanilla 1.20.1 ; test possible avec un mod ou un datapack ajoutant
-     ce tag) : non récolté ;
-   - feuilles / toile d'araignée / herbe : comportement cisaille (drop via `can_tool_perform_action shears_dig`) ;
-   - table d'enchantement : enchantable ; enclume : Efficiency/Fortune/Silk Touch OK, Unbreaking/Mending refusés ;
-   - durabilité : jamais de barre de dégâts.
-2. `runServer` pas encore lancé (nécessitera `eula=true` dans `run-server/eula.txt`).
+1. **Tests en jeu du Gauntlet à faire par l'utilisateur** : `TESTS.md` (5, 6–12, 13–36). Priorité : 13–17, 25, 27, 31, 36.
+2. JEI n'est pas dans l'environnement de dev (test 3) : l'ajouter en `runtimeOnly` si besoin (demander avant).
+3. Réponse du Discord d'Ars sur les assets : si accord, remplacer texture/modèle (le modèle officiel est GeckoLib ;
+   préférer une conversion en modèle JSON vanilla) et ajouter les crédits.
 
 ## 5. Erreurs connues
 Aucune.
 
 ## 6. Prochaines actions exactes
-1. ~~Étape A~~ — **fait**.
-2. ~~Étape B~~ — **fait** (item, registre, onglet Ars, lang, modèle, texture placeholder, runClient OK).
-3. ~~Étape C~~ — **codée et compilée** ; tests en jeu à confirmer (§4.1).
-4. **Étape D (prochaine)** : lire `EnchantersMirror` 4.12.7 (jar `ars_nouveau-1.20.1-4.12.7.264`), puis implémenter
-   `ICasterTool` (inscription Scribes Table sans forme, préfixe `MethodTouch.INSTANCE`, `use()` → `castSpell`). §8.3. Compiler.
-   Étape E : `IManaDiscountEquipment` (25 %). Compiler.
-5. Étape F : tooltip, recette Enchanting Apparatus (§8.5). Compiler.
-6. Étape G : checklist de test en jeu, serveur dédié.
+1. Tests en jeu du Gauntlet (`TESTS.md`) ; corriger tout écart constaté.
+2. Puis, dans l'ordre validé : comportements Mob Jar (Sniffer, Chat, Golem de neige, via `JarBehaviorRegistry.register`),
+   Enchanter's Fishing Rod, glyphe Pantomime, glyphe Bubble. Analyse 1.21.1 vs 4.12.7 avant chaque backport.
 
 ## 7. Analyse du Gauntlet officiel (vérifiée dans le code source)
 Sources : Ars Nouveau branche `1.20` (= 4.12.7, `version = '4.12.7'`, commit `2c74064b`) et branche `main`
