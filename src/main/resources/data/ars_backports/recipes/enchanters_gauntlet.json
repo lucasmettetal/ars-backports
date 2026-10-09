@@ -1,0 +1,30 @@
+{
+  "type": "ars_nouveau:enchanting_apparatus",
+  "keepNbtOfReagent": true,
+  "output": {
+    "item": "ars_backports:enchanters_gauntlet"
+  },
+  "pedestalItems": [
+    {
+      "tag": "forge:gems/diamond"
+    },
+    {
+      "tag": "forge:storage_blocks/gold"
+    },
+    {
+      "tag": "forge:storage_blocks/gold"
+    },
+    {
+      "tag": "forge:storage_blocks/source"
+    },
+    {
+      "tag": "forge:storage_blocks/source"
+    }
+  ],
+  "reagent": [
+    {
+      "tag": "forge:leather"
+    }
+  ],
+  "sourceCost": 0
+}

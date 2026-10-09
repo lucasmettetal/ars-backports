@@ -6,16 +6,21 @@ import com.hollingsworth.arsnouveau.api.spell.AbstractCastMethod;
 import com.hollingsworth.arsnouveau.api.spell.AbstractSpellPart;
 import com.hollingsworth.arsnouveau.api.spell.ISpellCaster;
 import com.hollingsworth.arsnouveau.api.spell.Spell;
+import com.hollingsworth.arsnouveau.client.gui.SpellTooltip;
 import com.hollingsworth.arsnouveau.common.items.ModItem;
 import com.hollingsworth.arsnouveau.common.spell.method.MethodTouch;
 import com.hollingsworth.arsnouveau.common.util.PortUtil;
+import com.hollingsworth.arsnouveau.setup.config.Config;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Tiers;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentCategory;
 import net.minecraft.world.level.Level;
@@ -23,9 +28,11 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.TierSortingRegistry;
 import net.minecraftforge.common.ToolAction;
 import net.minecraftforge.common.ToolActions;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -60,6 +67,25 @@ public class EnchantersGauntlet extends ModItem implements ICasterTool, IManaDis
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         ISpellCaster caster = getSpellCaster(player.getItemInHand(hand));
         return caster.castSpell(level, player, hand, Component.translatable(INVALID_SPELL_KEY), caster.getSpell());
+    }
+
+    // Tooltip as in 1.21.1 and Ars 4.12.7 casters: glyph icons by default, text with Shift (or if glyph tooltips are off).
+    // Only called on the client, so referencing Screen here is safe on a dedicated server (same as Ars' own items).
+    @Override
+    public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag flag) {
+        if (Screen.hasShiftDown() || !Config.GLYPH_TOOLTIPS.get()) {
+            getInformation(stack, level, tooltip, flag);
+        }
+        super.appendHoverText(stack, level, tooltip, flag);
+    }
+
+    @Override
+    public Optional<TooltipComponent> getTooltipImage(ItemStack stack) {
+        ISpellCaster caster = getSpellCaster(stack);
+        if (Config.GLYPH_TOOLTIPS.get() && !Screen.hasShiftDown() && !caster.isSpellHidden() && !caster.getSpell().isEmpty()) {
+            return Optional.of(new SpellTooltip(caster));
+        }
+        return Optional.empty();
     }
 
     // 25 % of the full spell cost (Touch included), added by ManaUtil to armor/curio discounts: Touch + Break = 15 -> 12.
