@@ -15,12 +15,16 @@ Ce fichier décrit des **faits vérifiés**. Le mettre à jour à la fin de chaq
   - E (réduction de mana 25 %) : **codée et compilée** (`50053c3`).
   - F (tooltip + recette Enchanting Apparatus) : **codée et compilée** (`3b5596d`) ; serveur dédié démarré sans erreur.
   - G (tests) : **checklist rédigée dans `TESTS.md`** ; tests en jeu C à F **pas encore faits**.
-- Assets : texture placeholder originale. Message de demande d'autorisation (anglais) rédigé le 2026-10-09 pour le
-  Discord d'Ars. Premier envoi (2026-10-09) dans « Addon Discussion & Help » : **mauvais salon** (réservé à certains
-  addons) ; un membre a conseillé **« General & Development Help »** (ou `general-and-help`) et de poster quand
-  l'équipe (heure américaine) est réveillée → viser 17h–19h heure française. Aucune réponse sur le fond pour l'instant.
-  Règles de ce Discord : anglais uniquement, pas de DM ni de mention sans permission, pas de cross-posting
-  (supprimer l'ancien message avant de reposter).
+- **Assets** : demande postée sur le Discord d'Ars (« General & Development Help », après un premier essai dans le
+  mauvais salon le 2026-10-09). Réponses reçues :
+  - *Mojobuncle* (Server Booster, 2026-10-09) : « not a spokesperson for ars… you'll be fine… only the very smallest
+    chance they will say No » ;
+  - *Lyrellion* (« Supreme Addon Developer », 2026-10-12) : « Generally speaking, the use of Ars assets specifically
+    for Ars addons is fine. »
+  Pas de « oui » formel de l'auteur/artiste, mais avec le README d'Ars (réutilisation encouragée pour les addons),
+  **l'utilisateur a décidé le 2026-10-13 d'utiliser les assets officiels**, crédités, et de les retirer sur demande.
+  Fait : texture officielle du Gauntlet (32×32) + modèle GeckoLib converti en JSON vanilla, crédits dans `README.md`
+  et `mods.toml`. Règles du Discord : anglais uniquement, pas de DM ni de mention sans permission, pas de cross-posting.
 - Suite **proposée** (voir `BACKPORT_ROADMAP.md`, l'utilisateur a dit « tu peux continuer » sans valider l'ordre en détail) :
   finir/tester le Gauntlet, puis Mob Jar (Sniffer, Chat, Golem de neige), Enchanter's Fishing Rod, glyphes Pantomime
   puis Bubble. **Exclus par l'utilisateur** : ce qui est trop compliqué, comme la nouvelle dimension (Planarium).
@@ -35,8 +39,9 @@ Ce fichier décrit des **faits vérifiés**. Le mettre à jour à la fin de chaq
 | `src/main/java/fr/lucas/arsbackports/registry/ModItems.java` | `DeferredRegister<Item>`, `ENCHANTERS_GAUNTLET` |
 | `src/main/java/fr/lucas/arsbackports/item/EnchantersGauntlet.java` | `ModItem implements ICasterTool, IManaDiscountEquipment` : outil (C), sorts (D), mana (E), tooltip (F) — détail §3 |
 | `src/main/resources/assets/ars_backports/lang/en_us.json`, `fr_fr.json` | nom de l'item + `ars_backports.gauntlet.invalid` (texte officiel 1.21 / tournure FR du Miroir d'Ars) |
-| `src/main/resources/assets/ars_backports/models/item/enchanters_gauntlet.json` | `minecraft:item/handheld` |
-| `src/main/resources/assets/ars_backports/textures/item/enchanters_gauntlet.png` | placeholder original 16×16 |
+| `src/main/resources/assets/ars_backports/models/item/enchanters_gauntlet.json` | modèle 3D vanilla converti de `geo/enchanters_gauntlet.geo.json` (Ars `main`) : 4 cubes, X miroir et origine à (8, 8.16, 8) comme `GeoItemRenderer`, box-UV Bedrock → UV par face (texture 32×32, `texture_size`), transformations `display` officielles. Rendu en jeu **à vérifier** |
+| `src/main/resources/assets/ars_backports/textures/item/enchanters_gauntlet.png` | texture **officielle** Ars 32×32 (All Rights Reserved, créditée) |
+| `README.md` | présentation publique (anglais) + crédits/licences (code LGPL, assets ARR hors LGPL) |
 | `src/main/resources/data/ars_backports/recipes/enchanters_gauntlet.json` | recette Enchanting Apparatus (format 4.12.7) |
 | `src/main/resources/META-INF/mods.toml`, `pack.mcmeta` | dépendances forge/minecraft/ars_nouveau ; pack_format 15 |
 | `TESTS.md` | checklist de 36 tests (+ refus d'enchantements, incassable, cisailles) avec procédures |
@@ -89,8 +94,8 @@ Sur un autre PC : n'importe quel JDK 17 + Git suffisent.
 ## 4. Blocages / points à vérifier
 1. **Tests en jeu du Gauntlet à faire par l'utilisateur** : `TESTS.md` (5, 6–12, 13–36). Priorité : 13–17, 25, 27, 31, 36.
 2. JEI n'est pas dans l'environnement de dev (test 3) : l'ajouter en `runtimeOnly` si besoin (demander avant).
-3. Réponse du Discord d'Ars sur les assets : si accord, remplacer texture/modèle (le modèle officiel est GeckoLib ;
-   préférer une conversion en modèle JSON vanilla) et ajouter les crédits.
+3. **Rendu du nouveau modèle du Gauntlet à vérifier en jeu** (inventaire, main 1re/3e personne, au sol, cadre) :
+   la conversion box-UV → UV par face (sens des faces est/ouest, retournement de dessus/dessous) n'a pas été vue en jeu.
 
 ## 5. Erreurs connues
 Aucune.
@@ -170,7 +175,7 @@ Côté tooltip : `Screen.hasShiftDown()`/`SpellTooltip` ne doivent être appelé
 (Ars le fait directement dans ses items ; on peut isoler dans une petite classe client par prudence).
 
 ### 8.5 Assets, recette, tags
-- Licence : code Ars LGPLv3 ; textures et modèles « All Rights Reserved » (README : réutilisation encouragée après contact sur Discord). **Placeholder uniquement** pour l'instant.
+- Licence : code Ars LGPLv3 ; textures et modèles « All Rights Reserved » (README : réutilisation encouragée après contact sur Discord). Assets officiels du Gauntlet utilisés depuis le 2026-10-13 (voir §1).
 - Rendu : modèle JSON vanilla (`item/generated` ou éléments 3D convertis), sans GeckoLib, sans code client.
 - Recette 1.20.1 (format vérifié sur `enchanters_mirror.json` 4.12.7) :
   `"type": "ars_nouveau:enchanting_apparatus"`, `"reagent": [{"tag": "forge:leather"}]`,

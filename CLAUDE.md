@@ -40,8 +40,9 @@ Premier objectif : **Enchanter's Gauntlet**. Ne commencer aucun autre backport s
 - item incassable (l'officiel n'a pas de durabilité) sauf découverte contraire
 - modèle/rendu vanilla (modèle JSON) autant que possible
 - pas de GeckoLib uniquement pour cet item
-- texture placeholder tant que l'autorisation de réutiliser l'asset officiel n'est pas obtenue
-  (assets Ars Nouveau = All Rights Reserved)
+- assets officiels Ars autorisés depuis le 2026-10-13 (décision de l'utilisateur, voir HANDOFF « Assets ») :
+  les réutiliser en les créditant (README + `credits` de `mods.toml`) ; ils restent All Rights Reserved, hors LGPL ;
+  les retirer si l'équipe Ars le demande. Convertir les modèles GeckoLib en modèles JSON vanilla quand c'est possible.
 - réduction de mana de 25 % comme l'original (`IManaDiscountEquipment`)
 - sort automatiquement préfixé par Touch à l'inscription ; les sorts contenant une forme sont refusés
 - reprendre autant que possible le comportement d'`EnchantersMirror` 4.12.7 (même structure, Touch au lieu de Self)
