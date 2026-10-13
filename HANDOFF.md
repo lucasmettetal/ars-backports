@@ -1,6 +1,6 @@
 # HANDOFF — état exact du projet
 
-Dernière mise à jour : 2026-10-09 (session locale Windows / VS Code — Gauntlet étapes D, E, F codées, G rédigée).
+Dernière mise à jour : 2026-10-13 (session locale Windows / VS Code — assets officiels du Gauntlet, backport Mob Jar).
 Ce fichier décrit des **faits vérifiés**. Le mettre à jour à la fin de chaque étape.
 
 ## 1. Résumé
@@ -14,7 +14,9 @@ Ce fichier décrit des **faits vérifiés**. Le mettre à jour à la fin de chaq
   - D (sorts) : **codée et compilée** (`f87e8cd`).
   - E (réduction de mana 25 %) : **codée et compilée** (`50053c3`).
   - F (tooltip + recette Enchanting Apparatus) : **codée et compilée** (`3b5596d`) ; serveur dédié démarré sans erreur.
-  - G (tests) : **checklist rédigée dans `TESTS.md`** ; tests en jeu C à F **pas encore faits**.
+  - G (tests) : **checklist rédigée dans `TESTS.md`** ; tests en jeu C à F **pas encore faits** (l'utilisateur a jugé
+    l'item conforme et le rendu du nouveau modèle correct, 2026-10-13, et a demandé de passer à la suite).
+- **Mob Jar** (Sniffer, Chat, Golem de neige) : **codé, compilé, serveur dédié OK** (2026-10-13) ; tests `TESTS.md` J1–J11 à faire.
 - **Assets** : demande postée sur le Discord d'Ars (« General & Development Help », après un premier essai dans le
   mauvais salon le 2026-10-09). Réponses reçues :
   - *Mojobuncle* (Server Booster, 2026-10-09) : « not a spokesperson for ars… you'll be fine… only the very smallest
@@ -25,9 +27,9 @@ Ce fichier décrit des **faits vérifiés**. Le mettre à jour à la fin de chaq
   **l'utilisateur a décidé le 2026-10-13 d'utiliser les assets officiels**, crédités, et de les retirer sur demande.
   Fait : texture officielle du Gauntlet (32×32) + modèle GeckoLib converti en JSON vanilla, crédits dans `README.md`
   et `mods.toml`. Règles du Discord : anglais uniquement, pas de DM ni de mention sans permission, pas de cross-posting.
-- Suite **proposée** (voir `BACKPORT_ROADMAP.md`, l'utilisateur a dit « tu peux continuer » sans valider l'ordre en détail) :
-  finir/tester le Gauntlet, puis Mob Jar (Sniffer, Chat, Golem de neige), Enchanter's Fishing Rod, glyphes Pantomime
-  puis Bubble. **Exclus par l'utilisateur** : ce qui est trop compliqué, comme la nouvelle dimension (Planarium).
+- Suite (voir `BACKPORT_ROADMAP.md`, l'utilisateur a dit « tu peux continuer sur le reste ») :
+  Enchanter's Fishing Rod, puis glyphes Pantomime et Bubble. **Exclus par l'utilisateur** : ce qui est trop compliqué,
+  comme la nouvelle dimension (Planarium).
 
 ## 2. Contenu réel du dépôt
 | Fichier | Rôle |
@@ -35,7 +37,11 @@ Ce fichier décrit des **faits vérifiés**. Le mettre à jour à la fin de chaq
 | `settings.gradle` | dépôts de plugins, plugin foojay, `rootProject.name = 'ars_backports'` |
 | `build.gradle` | ForgeGradle `[6.0,6.2)` (6.0.54), toolchain Java 17, mappings officiels, runs client/server (+ remap des refmaps mixin), dépôts BlameJared / Maven Central / Curios / GeckoLib filtrés par groupe, Ars en `implementation`, Curios + GeckoLib + MixinExtras en `runtimeOnly`, `-Xlint:deprecation` |
 | `gradle.properties` | MC 1.20.1, Forge 47.4.10 (`[47.4,)`), Ars `4.12.7.264` (`[4.12.7,)`), dev : Curios `5.14.1+1.20.1`, GeckoLib `4.8.4`, MixinExtras `0.4.1` ; modid, `LGPL-3.0-only`, version 0.1.0 |
-| `src/main/java/fr/lucas/arsbackports/ArsBackports.java` | `@Mod` ; enregistre `ModItems.ITEMS` ; ajoute le Gauntlet à l'onglet Ars (`CreativeTabRegistry.BLOCKS`, `ars_nouveau:general`) |
+| `src/main/java/fr/lucas/arsbackports/ArsBackports.java` | `@Mod` ; enregistre `ModItems.ITEMS` ; `FMLCommonSetupEvent` → `enqueueWork(JarBehaviors::register)` ; ajoute le Gauntlet à l'onglet Ars (`CreativeTabRegistry.BLOCKS`, `ars_nouveau:general`) |
+| `src/main/java/fr/lucas/arsbackports/mobjar/JarBehaviors.java` | enregistrement via `JarBehaviorRegistry.register` (CAT, SNOW_GOLEM, SNIFFER — non enregistrés par Ars 4.12.7) + helpers 1.21 absents de 4.12.7 : `isPowered` (`MobJar.POWERED`), `insertOrCreateItem` (`InventoryManager.fromTile(tile).insertStack`, reste en `ItemEntity` au-dessus du bocal, identique au 1.21) |
+| `src/main/java/fr/lucas/arsbackports/mobjar/SnowGolemBehavior.java` | copie fidèle du 1.21 : boule de neige par la face `MobJar.FACING` sur front montant redstone (`onRedstonePower`, appelé par `MobJar.neighborChanged` 4.12.7) |
+| `src/main/java/fr/lucas/arsbackports/mobjar/SnifferBehavior.java` | loot `sniffer_digging` toutes les 8 min (adulte, bocal non alimenté). **Écart** : `Sniffer.DATA_DROP_SEED_AT_TICK` est privé en 1.20.1 → compteur dans `tile.getExtraDataTag()` (clé `ars_backports:sniffer_ticks`, sauvegardé avec le bocal, donc survit au rechargement contrairement au 1.21) ; événement d'entité 63 (1.21 uniquement) non envoyé. Loot : `server.getLootData().getLootTable(...)` (1.20.1) |
+| `src/main/java/fr/lucas/arsbackports/mobjar/CatBehavior.java` | signal 15 si `cat.getOwner()` connecté (`getSignalPower`, lu par `MobJar.getSignal` 4.12.7) ; carte `LevelPosMap` (API 4.12.7) ; cadeau du matin (`SleepFinishedTimeEvent`, 70 %, ≤ 10 blocs, `getSleepTimer() >= 100`). **Écarts** : `PlayerPostLogOutEvent` (Ars 1.21) → `PlayerLoggedOutEvent` Forge + mise à jour reportée au tick suivant (`server.tell(new TickTask(...))`) car le joueur est encore dans le monde à ce moment ; bug officiel corrigé : `return` → `continue` dans la boucle des cadeaux (le `return` arrêtait tous les bocaux suivants) |
 | `src/main/java/fr/lucas/arsbackports/registry/ModItems.java` | `DeferredRegister<Item>`, `ENCHANTERS_GAUNTLET` |
 | `src/main/java/fr/lucas/arsbackports/item/EnchantersGauntlet.java` | `ModItem implements ICasterTool, IManaDiscountEquipment` : outil (C), sorts (D), mana (E), tooltip (F) — détail §3 |
 | `src/main/resources/assets/ars_backports/lang/en_us.json`, `fr_fr.json` | nom de l'item + `ars_backports.gauntlet.invalid` (texte officiel 1.21 / tournure FR du Miroir d'Ars) |
@@ -92,18 +98,19 @@ Git et JDK installés en **portable** dans `C:\Users\lucas\tools\` (PortableGit 
 Sur un autre PC : n'importe quel JDK 17 + Git suffisent.
 
 ## 4. Blocages / points à vérifier
-1. **Tests en jeu du Gauntlet à faire par l'utilisateur** : `TESTS.md` (5, 6–12, 13–36). Priorité : 13–17, 25, 27, 31, 36.
+1. **Tests en jeu à faire par l'utilisateur** : Gauntlet `TESTS.md` 5, 6–36 (priorité 13–17, 25, 27, 31, 36) ;
+   Mob Jar J1–J11.
 2. JEI n'est pas dans l'environnement de dev (test 3) : l'ajouter en `runtimeOnly` si besoin (demander avant).
-3. **Rendu du nouveau modèle du Gauntlet à vérifier en jeu** (inventaire, main 1re/3e personne, au sol, cadre) :
-   la conversion box-UV → UV par face (sens des faces est/ouest, retournement de dessus/dessous) n'a pas été vue en jeu.
+3. Rendu du modèle converti du Gauntlet : **validé visuellement par l'utilisateur** le 2026-10-13.
 
 ## 5. Erreurs connues
 Aucune.
 
 ## 6. Prochaines actions exactes
-1. Tests en jeu du Gauntlet (`TESTS.md`) ; corriger tout écart constaté.
-2. Puis, dans l'ordre validé : comportements Mob Jar (Sniffer, Chat, Golem de neige, via `JarBehaviorRegistry.register`),
-   Enchanter's Fishing Rod, glyphe Pantomime, glyphe Bubble. Analyse 1.21.1 vs 4.12.7 avant chaque backport.
+1. **Enchanter's Fishing Rod** (+ entité `EnchantedHook`) : analyser `common/items/EnchantersFishingRod.java`,
+   `common/entity/EnchantedHook.java`, renderer, modèles et recette de la branche `main`, puis porter vers 4.12.7.
+2. Glyphe Pantomime, puis glyphe Bubble. Analyse 1.21.1 vs 4.12.7 avant chaque backport.
+3. En parallèle : tests en jeu (`TESTS.md`) ; corriger tout écart constaté.
 
 ## 7. Analyse du Gauntlet officiel (vérifiée dans le code source)
 Sources : Ars Nouveau branche `1.20` (= 4.12.7, `version = '4.12.7'`, commit `2c74064b`) et branche `main`

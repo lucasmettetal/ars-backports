@@ -73,3 +73,21 @@ mais autorise le lancement même sans mana suffisant (`SpellResolver.enoughMana`
 | 34 | Mort du joueur | mourir, récupérer l'item | sort conservé | [ ] |
 | 35 | Multijoueur | 2 clients sur `runServer` | effets visibles par les deux | [ ] |
 | 36 | Serveur dédié | tests 13–30 sur `runServer` | identique au solo, aucun crash serveur | [ ] |
+
+# Checklist de tests — comportements Mob Jar
+
+Capturer le mob avec un Containment Jar d'Ars (`/give @p ars_nouveau:mob_jar`) ; un coffre adjacent reçoit les objets.
+
+| # | Test | Procédure | Attendu | État |
+|---|---|---|---|---|
+| J1 | Sniffer : graines | sniffer adulte en bocal, coffre collé, attendre 8 min (non alimenté) | graine de torchflower ou pitcher pod dans le coffre (sinon au-dessus du bocal), son du sniffer | [ ] |
+| J2 | Sniffer : pause | alimenter le bocal en redstone | aucune production tant qu'il est alimenté ; la minuterie reprend ensuite | [ ] |
+| J3 | Sniffer : bébé | bébé sniffer | rien avant qu'il soit adulte | [ ] |
+| J4 | Sniffer : sauvegarde | quitter/revenir au bout de 4 min | la minuterie reprend (ne repart pas de zéro) | [ ] |
+| J5 | Chat : signal | chat apprivoisé en bocal, poudre de redstone à côté | signal 15 quand le propriétaire est connecté | [ ] |
+| J6 | Chat : déconnexion | propriétaire se déconnecte (multijoueur / `runServer`) | signal 0 juste après la déconnexion | [ ] |
+| J7 | Chat : reconnexion | propriétaire se reconnecte | signal 15 | [ ] |
+| J8 | Chat sauvage | chat non apprivoisé | signal 0 | [ ] |
+| J9 | Chat : cadeau | dormir à moins de 10 blocs du bocal jusqu'au matin | ~70 % de chances d'un cadeau (ficelle, plume, peau de lapin…) dans le coffre | [ ] |
+| J10 | Golem de neige | impulsion redstone (bouton) sur le bocal | boule de neige tirée par la face avant du bocal, son du golem | [ ] |
+| J11 | Serveur dédié | J1, J5–J7, J10 sur `runServer` | identique, aucun crash | [ ] |

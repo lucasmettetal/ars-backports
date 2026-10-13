@@ -7,18 +7,19 @@ Classement établi le 2026-10-09 en comparant les branches Ars Nouveau `1.20` (4
 candidat. Chaque backport fera l'objet d'une analyse détaillée 1.21.1 vs 4.12.7 avant d'être codé.
 
 **Contrainte commune** : textures/modèles Ars = All Rights Reserved (README : « Addon authors are encouraged to reuse
-Ars Nouveau assets and to reach out in the discord »). Placeholders originaux tant qu'aucune autorisation n'est obtenue.
-Les éléments purement décoratifs n'ont pas d'intérêt sans les assets officiels.
+Ars Nouveau assets and to reach out in the discord »). Depuis le 2026-10-13, assets officiels utilisés et crédités (voir HANDOFF « Assets »).
+Les éléments décoratifs (⚠️) redeviennent envisageables, à décider avec l'utilisateur.
 
 ## En cours
-1. **Enchanter's Gauntlet** — codé (étapes A à F), tests en jeu à faire (`TESTS.md`).
+1. **Enchanter's Gauntlet** — codé (étapes A à F), assets officiels ; tests en jeu à faire (`TESTS.md`).
+2. **Mob Jar** (Sniffer, Chat, Golem de neige) — codé le 2026-10-13 ; tests J1–J11 à faire.
 
 ## ✅ Faisable, ordre proposé
 | # | Fonctionnalité | Difficulté | Notes |
 |---|---|---|---|
-| 2 | Mob Jar : **Sniffer** (graines anciennes), **Chat** (signal redstone si apprivoisé + carte des chats), **Golem de neige** (boule de neige sur signal) | facile | pur code, aucun asset ; `JarBehaviorRegistry.register(EntityType, JarBehavior)` est public en 4.12.7 ; ces mobs existent en 1.20.1 |
+| 2 ✔ | Mob Jar (fait 2026-10-13) : **Sniffer** (graines anciennes), **Chat** (signal redstone si apprivoisé + carte des chats), **Golem de neige** (boule de neige sur signal) | facile | pur code, aucun asset ; `JarBehaviorRegistry.register(EntityType, JarBehavior)` est public en 4.12.7 ; ces mobs existent en 1.20.1 |
 | 3 | **Enchanter's Fishing Rod** + entité `EnchantedHook` | moyenne | ~250 lignes ; mêmes mécanismes `ICasterTool` que le Gauntlet ; Data Components → NBT/SpellCaster |
-| 4 | Glyphe **Pantomime** (forme : lance sur un point devant le joueur) | facile–moyenne | timeline de particules 1.21 → particules existantes d'Ars 4.12.7 ; icône placeholder ; recette de glyphe |
+| 4 | Glyphe **Pantomime** (forme : lance sur un point devant le joueur) | facile–moyenne | timeline de particules 1.21 → particules existantes d'Ars 4.12.7 ; icône officielle ; recette de glyphe |
 | 5 | Glyphe **Bubble** + `BubbleEntity` | moyenne | ~350 lignes ; rendu simple sans GeckoLib ; l'aspect « mouillé » officiel passe par un Mixin → omis |
 
 ## ⚠️ Faisable mais adapté (pas identique)

@@ -2,10 +2,12 @@ package fr.lucas.arsbackports;
 
 import com.hollingsworth.arsnouveau.setup.registry.CreativeTabRegistry;
 import com.mojang.logging.LogUtils;
+import fr.lucas.arsbackports.mobjar.JarBehaviors;
 import fr.lucas.arsbackports.registry.ModItems;
 import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.slf4j.Logger;
 
@@ -17,7 +19,12 @@ public class ArsBackports {
     public ArsBackports(FMLJavaModLoadingContext context) {
         IEventBus modEventBus = context.getModEventBus();
         ModItems.ITEMS.register(modEventBus);
+        modEventBus.addListener(this::commonSetup);
         modEventBus.addListener(this::addCreative);
+    }
+
+    private void commonSetup(FMLCommonSetupEvent event) {
+        event.enqueueWork(JarBehaviors::register);
     }
 
     // Our items go into Ars Nouveau's main tab ("ars_nouveau:general") next to its own caster tools.
