@@ -1,6 +1,7 @@
 package fr.lucas.arsbackports.registry;
 
 import fr.lucas.arsbackports.ArsBackports;
+import fr.lucas.arsbackports.item.EnchantersFishingRod;
 import fr.lucas.arsbackports.item.EnchantersGauntlet;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.registries.DeferredRegister;
@@ -12,6 +13,9 @@ public final class ModItems {
 
     public static final RegistryObject<EnchantersGauntlet> ENCHANTERS_GAUNTLET =
             ITEMS.register("enchanters_gauntlet", () -> new EnchantersGauntlet(new Item.Properties()));
+
+    public static final RegistryObject<EnchantersFishingRod> ENCHANTERS_FISHING_ROD =
+            ITEMS.register("enchanters_fishing_rod", () -> new EnchantersFishingRod(new Item.Properties()));
 
     private ModItems() {
     }

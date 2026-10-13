@@ -7,7 +7,7 @@ modId="${mod_id}"
 version="${mod_version}"
 displayName="${mod_name}"
 authors="${mod_authors}"
-credits="Code adapted from Ars Nouveau by baileyholl and contributors (LGPLv3). Enchanter's Gauntlet texture and model by the Ars Nouveau team (All Rights Reserved, reused with the community's encouragement for addons)."
+credits="Code adapted from Ars Nouveau by baileyholl and contributors (LGPLv3). Enchanter's Gauntlet and Enchanter's Fishing Rod textures and models by the Ars Nouveau team (All Rights Reserved, reused with the community's encouragement for addons)."
 description='''${mod_description}'''
 
 [[dependencies.${mod_id}]]

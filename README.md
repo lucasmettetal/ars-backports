@@ -10,6 +10,13 @@ It depends on Ars Nouveau and does not modify or redistribute it. No mixins: it 
   Inscribe it at the Scribes Table with a spell that has no form: Touch is added automatically, and spells
   cast with it get a 25 % mana discount. Crafted in the Enchanting Apparatus (leather, diamond, 2 gold blocks,
   2 source blocks).
+- **Enchanter's Fishing Rod** — a fishing rod that holds a formless spell (Touch is added automatically): fish
+  normally, or hook a creature and use the rod again to cast the spell on it. Lure and Luck of the Sea work.
+  Crafted in the Enchanting Apparatus (fishing rod, 2 gold blocks, 2 source blocks; enchantments are kept).
+- **Mob Jar behaviors**:
+  - *Sniffer*: digs up ancient seeds every 8 minutes into adjacent inventories (paused while the jar is powered);
+  - *Cat*: emits a redstone signal while its owner is online, and may bring a morning gift when its owner sleeps nearby;
+  - *Snow Golem*: throws a snowball out of the jar on a redstone pulse.
 
 More backports are planned, see [BACKPORT_ROADMAP.md](BACKPORT_ROADMAP.md).
 
@@ -20,11 +27,11 @@ More backports are planned, see [BACKPORT_ROADMAP.md](BACKPORT_ROADMAP.md).
 ## Credits and licenses
 - **Code**: adapted from [Ars Nouveau](https://github.com/baileyholl/Ars-Nouveau) by baileyholl and contributors,
   licensed under the **LGPL v3** (see [LICENSE](LICENSE)). This addon's code is also LGPL v3.
-- **Assets**: the Enchanter's Gauntlet texture and model come from Ars Nouveau. Ars Nouveau's textures and models
+- **Assets**: the Enchanter's Gauntlet and Enchanter's Fishing Rod textures and models come from Ars Nouveau. Ars Nouveau's textures and models
   are *All Rights Reserved* and remain the property of their authors; they are **not** covered by this repository's
   LGPL license. They are used here because Ars Nouveau encourages addon authors to reuse its assets, and the reuse
   was discussed on the Ars Nouveau Discord. They will be removed on request of the Ars Nouveau team.
-  The gauntlet model was converted from GeckoLib to a vanilla JSON model.
+  Their models were converted from GeckoLib to vanilla JSON models.
 
 ## Building
     gradlew build          # jar in build/libs/

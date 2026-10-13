@@ -31,6 +31,7 @@ public class ArsBackports {
     private void addCreative(BuildCreativeModeTabContentsEvent event) {
         if (event.getTabKey() == CreativeTabRegistry.BLOCKS.getKey()) {
             event.accept(ModItems.ENCHANTERS_GAUNTLET);
+            event.accept(ModItems.ENCHANTERS_FISHING_ROD);
         }
     }
 }

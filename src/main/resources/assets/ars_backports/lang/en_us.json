@@ -1,4 +1,6 @@
 {
   "item.ars_backports.enchanters_gauntlet": "Enchanter's Gauntlet",
-  "ars_backports.gauntlet.invalid": "Invalid spell. Gauntlets accept Effects and Augments only."
+  "ars_backports.gauntlet.invalid": "Invalid spell. Gauntlets accept Effects and Augments only.",
+  "item.ars_backports.enchanters_fishing_rod": "Enchanter's Fishing Rod",
+  "ars_backports.fishing_rod.invalid": "Invalid Spell. Enchanter's Fishing Rod accept Effects and Augments only."
 }

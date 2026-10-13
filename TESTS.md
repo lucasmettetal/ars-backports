@@ -91,3 +91,22 @@ Capturer le mob avec un Containment Jar d'Ars (`/give @p ars_nouveau:mob_jar`) ;
 | J9 | Chat : cadeau | dormir à moins de 10 blocs du bocal jusqu'au matin | ~70 % de chances d'un cadeau (ficelle, plume, peau de lapin…) dans le coffre | [ ] |
 | J10 | Golem de neige | impulsion redstone (bouton) sur le bocal | boule de neige tirée par la face avant du bocal, son du golem | [ ] |
 | J11 | Serveur dédié | J1, J5–J7, J10 sur `runServer` | identique, aucun crash | [ ] |
+
+# Checklist de tests — Enchanter's Fishing Rod
+
+Mise en place : `/give @p ars_backports:enchanters_fishing_rod`, un livre de sorts, une Scribes Table, de l'eau.
+
+| # | Test | Procédure | Attendu | État |
+|---|---|---|---|---|
+| P1 | Onglet / rendu | onglet Ars Nouveau ; regarder la canne en main, au sol, en cadre | modèle 3D officiel, nom EN/FR | [ ] |
+| P2 | Canne vierge | clic droit sans sort inscrit | message « Invalid Spell… », la ligne n'est **pas** lancée (comme l'officiel) | [ ] |
+| P3 | Inscription | Scribes Table, `Harm` | accepté, tooltip `Touch, Harm` | [ ] |
+| P4 | Refus de forme | `Projectile → Harm` | refusé avec le message de la canne | [ ] |
+| P5 | Rendu lancé | lancer la ligne | modèle passe en texture « lancée », ligne vanilla visible depuis la canne | [ ] |
+| P6 | Pêche normale | lancer dans l'eau, attendre, ramener | poisson / trésor comme une canne vanilla | [ ] |
+| P7 | Lure / Luck of the Sea | enchanter (table : enchantabilité 1, ou enclume + livre) | acceptés, et effet réel (touche plus rapide / meilleur butin) ; Unbreaking/Mending refusés | [ ] |
+| P8 | Sort sur entité | accrocher un mob, clic droit | le sort se lance sur le mob (dégâts pour Harm), la ligne reste ; re-clic = nouveau lancer | [ ] |
+| P9 | Mana | survie, répéter P8 | mana consommé à chaque lancer, message Ars si insuffisant | [ ] |
+| P10 | Recette | Enchanting Apparatus : canne vanilla (enchantée) + 2 blocs d'or + 2 blocs de Source | canne d'enchanteur, enchantements conservés | [ ] |
+| P11 | Multijoueur | un autre joueur regarde | il voit le flotteur et la ligne ; texture « lancée » seulement pour le porteur | [ ] |
+| P12 | Serveur dédié | P2, P5, P6, P8 sur `runServer` | identique, aucun crash | [ ] |

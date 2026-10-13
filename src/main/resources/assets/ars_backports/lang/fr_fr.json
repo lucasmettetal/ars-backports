@@ -1,4 +1,6 @@
 {
   "item.ars_backports.enchanters_gauntlet": "Gantelet d'enchanteur",
-  "ars_backports.gauntlet.invalid": "Sort invalide. Les Gantelets n'acceptent que les Effets et les Améliorations."
+  "ars_backports.gauntlet.invalid": "Sort invalide. Les Gantelets n'acceptent que les Effets et les Améliorations.",
+  "item.ars_backports.enchanters_fishing_rod": "Canne à pêche d'enchanteur",
+  "ars_backports.fishing_rod.invalid": "Sort invalide. La Canne à pêche d'enchanteur n'accepte que les Effets et les Améliorations."
 }

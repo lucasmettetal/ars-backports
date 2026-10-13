@@ -1,0 +1,7 @@
+{
+  "parent": "ars_backports:item/enchanters_fishing_rod",
+  "textures": {
+    "0": "ars_backports:item/enchanters_fishing_rod_cast",
+    "particle": "ars_backports:item/enchanters_fishing_rod_cast"
+  }
+}
