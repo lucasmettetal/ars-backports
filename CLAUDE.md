@@ -47,6 +47,8 @@ Ne jamais commencer un élément ⚠️ ou ❌ de la roadmap sans accord explici
 - casters à Touch implicite (Gauntlet, canne) : implémenter `item/TouchCaster` (refus des formes, préfixe Touch sur une copie, tooltip)
 - code client uniquement dans `client/` (`@Mod.EventBusSubscriber(value = Dist.CLIENT)`)
 - Mob Jar : un `JarBehavior` par mob dans `mobjar/`, enregistré dans `JarBehaviors.register()`
+- glyphes : une classe par glyphe dans `glyph/`, enregistrée dans `Glyphs.register()` (appelé dans le constructeur du mod) ;
+  id `ars_backports:glyph_<nom>` ; fournir modèle, texture, `glyph_name`/`glyph_desc` (en_us + fr_fr), recette `ars_nouveau:glyph`
 - assets officiels : copier depuis la branche `main` d'Ars, convertir les modèles GeckoLib avec `tools/geo_to_vanilla_model.awk`
 - messages : clés `ars_backports.*` (les clés `ars_nouveau.*` ajoutées en 1.21 n'existent pas en 4.12.7) ; en_us + fr_fr
 - recettes : format 4.12.7 (`recipes/`, `output`, `reagent` en liste, tags `forge:` au lieu de `c:`)

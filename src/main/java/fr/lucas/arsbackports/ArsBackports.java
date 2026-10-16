@@ -2,6 +2,7 @@ package fr.lucas.arsbackports;
 
 import com.hollingsworth.arsnouveau.setup.registry.CreativeTabRegistry;
 import com.mojang.logging.LogUtils;
+import fr.lucas.arsbackports.glyph.Glyphs;
 import fr.lucas.arsbackports.mobjar.JarBehaviors;
 import fr.lucas.arsbackports.registry.ModItems;
 import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
@@ -19,6 +20,7 @@ public class ArsBackports {
     public ArsBackports(FMLJavaModLoadingContext context) {
         IEventBus modEventBus = context.getModEventBus();
         ModItems.ITEMS.register(modEventBus);
+        Glyphs.register();
         modEventBus.addListener(this::commonSetup);
         modEventBus.addListener(this::addCreative);
     }

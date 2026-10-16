@@ -1,6 +1,6 @@
 # HANDOFF — état exact du projet
 
-Dernière mise à jour : **2026-10-13** (session locale Windows / VS Code).
+Dernière mise à jour : **2026-10-16** (session locale Windows / VS Code — glyphe Pantomime).
 Ce fichier décrit des **faits vérifiés** et doit permettre de reprendre le projet **sans aucun accès aux conversations
 précédentes**. Le mettre à jour à la fin de chaque étape (voir `CLAUDE.md`).
 
@@ -21,12 +21,14 @@ précédentes**. Le mettre à jour à la fin de chaque étape (voir `CLAUDE.md`)
 | **Enchanter's Gauntlet** (étapes B–F) | ✅ codé, compilé, serveur dédié OK, assets officiels | `ec13911` → `2baa17c` | B (onglet, texture, noms) et rendu du modèle **validés par l'utilisateur** ; 5–36 **à faire** |
 | **Mob Jar** : Sniffer, Chat, Golem de neige | ✅ codé, compilé, serveur dédié OK | `5f53d80` | J1–J11 **à faire** |
 | **Enchanter's Fishing Rod** | ✅ codé, compilé, serveur dédié OK, assets officiels | `2ee04f1` | P1–P12 **à faire** |
-| Glyphe Pantomime | ⏳ prochain | — | — |
-| Glyphe Bubble | ⏳ ensuite | — | — |
+| **Glyphe Pantomime** (forme) | ✅ codé, compilé, serveur dédié OK (glyphe + config enregistrés), icône officielle | voir `git log` (« pantomime ») | G1–G9 **à faire** |
+| Glyphe Bubble | ⏳ prochain | — | — |
 
-Dernier résultat : **2026-10-13 — `gradlew.bat build` → BUILD SUCCESSFUL, 0 avertissement javac** ;
-`gradlew.bat runServer` → `Done (12.761s)!`, aucune erreur de recette, aucune erreur `ars_backports`.
-`runClient` (avant l'ajout de la canne) : menu principal atteint, aucune erreur de modèle/texture.
+Dernier résultat : **2026-10-16 — `gradlew.bat build` → BUILD SUCCESSFUL, 0 avertissement javac** ;
+`gradlew.bat runServer` → `Done (9.438s)!`, glyphe `ars_backports:glyph_pantomime` enregistré, config
+`config/ars_backports/glyph_pantomime.toml` créée, aucune erreur de recette, aucune erreur `ars_backports`.
+`runClient` : dernier lancement avant l'ajout de la canne et du Pantomime (menu principal, aucune erreur de modèle) ;
+rendu de la canne et du glyphe **pas encore vus en jeu**.
 
 ## 2. Décisions et contexte donnés par l'utilisateur
 - **Cibles figées** : Minecraft 1.20.1, Forge 47.4.10, Java 17, Ars Nouveau 4.12.7 (`4.12.7.264`). Ne pas changer sans accord.
@@ -62,6 +64,11 @@ Dernier résultat : **2026-10-13 — `gradlew.bat build` → BUILD SUCCESSFUL, 0
 | `.../entity/EnchantedHook.java` | hameçon de la canne (sous-classe de `FishingHook`, §4.3) |
 | `.../client/ClientSetup.java` | **client uniquement** (`@EventBusSubscriber(value = Dist.CLIENT)`) : propriété d'item `cast` de la canne |
 | `.../mobjar/JarBehaviors.java`, `CatBehavior.java`, `SnifferBehavior.java`, `SnowGolemBehavior.java` | comportements Mob Jar (§4.2) |
+| `.../glyph/Glyphs.java` | enregistrement des glyphes (`GlyphRegistry.registerSpell`), appelé **dans le constructeur du mod** (§4.4) |
+| `.../glyph/MethodPantomime.java` | forme Pantomime (§4.4) |
+| `.../client/PantomimeOutlineRenderer.java` | **client uniquement** : contour du bloc visé avec Pantomime + Sensitive (§4.4) |
+| `.../models/item/glyph_pantomime.json`, `.../textures/item/glyph_pantomime.png` | icône du glyphe (texture officielle `textures/item/pantomime.png` de la branche `main`) |
+| `src/main/resources/data/ars_backports/recipes/glyph_pantomime.json` | recette de glyphe (Scribes Table) : 8 × `forge:glass`, 27 exp |
 | `src/main/resources/assets/ars_backports/lang/en_us.json`, `fr_fr.json` | noms + messages d'erreur (`ars_backports.gauntlet.invalid`, `ars_backports.fishing_rod.invalid`) ; textes anglais officiels 1.21, français calqué sur les traductions d'Ars (« … d'enchanteur ») |
 | `.../models/item/enchanters_gauntlet.json` | modèle 3D vanilla converti du GeckoLib officiel (§5.1) |
 | `.../models/item/enchanters_fishing_rod.json`, `enchanters_fishing_rod_cast.json` | modèle de la canne converti (§5.1) + variante « lancée » (même géométrie, autre texture) via override `cast` |
@@ -149,6 +156,27 @@ et vérifiées par `javap` dans les jars résolus (§5.2). Les **écarts** avec 
 - Recette : reagent `minecraft:fishing_rod` ; pedestals 2× `forge:storage_blocks/gold`, 2× `forge:storage_blocks/source` ;
   `sourceCost` 0 ; `keepNbtOfReagent` true (les enchantements de la canne vanilla sont conservés).
 
+### 4.4 Glyphe Pantomime (forme)
+- **Enregistrement d'un glyphe par un addon en 4.12.7** (vérifié dans l'addon d'exemple officiel, branche `1.20.x`,
+  et dans `GlyphRegistry` 4.12.7) : `GlyphRegistry.registerSpell(part)` **pendant la construction du mod** (il crée la
+  config serveur du glyphe dans le conteneur du mod actif, et Ars crée l'item du glyphe — classe `Glyph`, nom de registre
+  = celui du glyphe — au moment de l'enregistrement des items). L'addon fournit : `models/item/<id>.json`, la texture,
+  les clés `<modid>.glyph_name.<id>` et `<modid>.glyph_desc.<id>` (le nom de l'item est « Glyph of » + `glyph_name`),
+  et une recette `ars_nouveau:glyph` (format 4.12.7 : `"inputItems": [{"item": {...}}]`, `"output": "<id>"`, `exp`, `count`).
+  Id : `ars_backports:glyph_pantomime` (l'officiel est `ars_nouveau:glyph_pantomime`).
+- Logique copiée du 1.21.1 : la cible est le bloc à 2 blocs (regard horizontal, `xRot < 45`) ou 3 blocs (regard vers le
+  bas) devant les yeux, −1 avec Dampen (limite 1), +1 par Amplify ; l'effet est résolu là quel que soit ce qui a été
+  cliqué (bloc, entité, vide). Coût 5 ; augments Amplify, Dampen, Sensitive ; description identique.
+- **Écarts** : en 1.21.1, l'effet visuel et le son viennent du système de « particle timelines » (absent de 4.12.7 ;
+  timeline par défaut = burst) → remplacés par ce que fait le Touch de 4.12.7 : `PacketANEffect` BURST à la couleur du
+  sort + `PacketAddFadingLight`. Les descriptions par augment (`addAugmentDescriptions`, clés `augment_desc`) n'existent
+  pas en 4.12.7 → non reprises (le texte du glyphe les décrit déjà).
+- **Sensitive** : contour du bloc visé dessiné côté client (`RenderLevelStageEvent`, étape `AFTER_TRIPWIRE_BLOCKS`,
+  priorité `LOWEST`, comme le 1.21) quand le caster en main principale porte un sort Pantomime + Sensitive. Couleur :
+  `spell.color` (le 1.21 prend la couleur de la timeline). Lignes via `renderBuffers().bufferSource()` +
+  `endBatch(RenderType.lines())` (le 1.21 utilise l'`outlineBufferSource`).
+- Les casters à Touch implicite (Gauntlet, canne) refusent ce glyphe : c'est une forme.
+
 ## 5. Méthodes réutilisables
 ### 5.1 Conversion des modèles GeckoLib → JSON vanilla
 Les items officiels 1.21 utilisent GeckoLib (`models/item/<item>.json` avec `"parent": "builtin/entity"` +
@@ -178,13 +206,13 @@ configs « not correct. Correcting », `Failed to load properties from file: ser
 `Reflective setAccessible` (bruit de debug).
 
 ## 6. Prochaines actions exactes
-1. **Glyphe Pantomime** (forme) : lire `common/spell/method/MethodPantomime.java` (branche `main`), la timeline
-   `PantomimeTimeline` (à remplacer par les particules/sons d'Ars 4.12.7), la recette de glyphe, l'icône
-   (`textures/item/glyph_pantomime.png` probablement) et la lang ; puis comment un addon enregistre un glyphe en 4.12.7
-   (`GlyphRegistry`/`ArsNouveauAPI`, addon d'exemple branche `1.20.x`).
-2. **Glyphe Bubble** + `BubbleEntity` (rendu simple sans GeckoLib ; l'effet « mouillé » officiel passe par un Mixin → omis).
-3. Tests en jeu par l'utilisateur (`TESTS.md`) ; corriger tout écart constaté.
-4. Ensuite seulement, avec accord de l'utilisateur : éléments ⚠️ de `BACKPORT_ROADMAP.md`.
+1. **Glyphe Bubble** (effet) + `BubbleEntity` : lire `common/spell/effect/EffectBubble.java`, `common/entity/BubbleEntity.java`
+   (~250 lignes, `Projectile` + `GeoEntity`), son renderer/modèle GeckoLib, `ModEntities` (enregistrement), la recette
+   et la lang de la branche `main`. Prévoir : enregistrement d'un `EntityType` (`DeferredRegister<EntityType<?>>`),
+   renderer client sans GeckoLib, glyphe via `Glyphs.register()` (§4.4). L'effet « mouillé » officiel
+   (`EntityMixin` : `SOAKED_EFFECT` / passager d'une bulle) passe par un Mixin → à omettre (le signaler).
+2. Tests en jeu par l'utilisateur (`TESTS.md`) ; corriger tout écart constaté.
+3. Ensuite seulement, avec accord de l'utilisateur : éléments ⚠️ de `BACKPORT_ROADMAP.md`.
 
 ## 7. Environnement
 - Java **Temurin 17.0.20.1+1**, Gradle 8.8 (wrapper), ForgeGradle 6.0.54, Forge 1.20.1-47.4.10, mappings `official`,
@@ -197,7 +225,7 @@ configs « not correct. Correcting », `Failed to load properties from file: ser
 
 ## 8. Blocages / points à vérifier
 1. **Tests en jeu** (utilisateur) : `TESTS.md` — Gauntlet 5–36 (priorité 13–17, 25, 27, 31, 36), Mob Jar J1–J11,
-   canne P1–P12. Rendu en jeu de la canne (rangée/lancée) **non encore vu**.
+   canne P1–P12, Pantomime G1–G9. Rendu en jeu de la canne (rangée/lancée) et de l'icône du glyphe **non encore vus**.
 2. JEI absent de l'environnement de dev (test 3) : l'ajouter en `runtimeOnly` si besoin (demander avant).
 3. Erreurs connues : aucune.
 

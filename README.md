@@ -17,6 +17,8 @@ It depends on Ars Nouveau and does not modify or redistribute it. No mixins: it 
   - *Sniffer*: digs up ancient seeds every 8 minutes into adjacent inventories (paused while the jar is powered);
   - *Cat*: emits a redstone signal while its owner is online, and may bring a morning gift when its owner sleeps nearby;
   - *Snow Golem*: throws a snowball out of the jar on a redstone pulse.
+- **Pantomime glyph** (form) — applies the spell to the block a couple of blocks in front of you, whatever you aim at.
+  Amplify/Dampen move the target farther/closer; Sensitive outlines the targeted block.
 
 More backports are planned, see [BACKPORT_ROADMAP.md](BACKPORT_ROADMAP.md).
 
@@ -27,7 +29,8 @@ More backports are planned, see [BACKPORT_ROADMAP.md](BACKPORT_ROADMAP.md).
 ## Credits and licenses
 - **Code**: adapted from [Ars Nouveau](https://github.com/baileyholl/Ars-Nouveau) by baileyholl and contributors,
   licensed under the **LGPL v3** (see [LICENSE](LICENSE)). This addon's code is also LGPL v3.
-- **Assets**: the Enchanter's Gauntlet and Enchanter's Fishing Rod textures and models come from Ars Nouveau. Ars Nouveau's textures and models
+- **Assets**: the Enchanter's Gauntlet and Enchanter's Fishing Rod textures and models, and the Pantomime glyph icon,
+  come from Ars Nouveau. Ars Nouveau's textures and models
   are *All Rights Reserved* and remain the property of their authors; they are **not** covered by this repository's
   LGPL license. They are used here because Ars Nouveau encourages addon authors to reuse its assets, and the reuse
   was discussed on the Ars Nouveau Discord. They will be removed on request of the Ars Nouveau team.

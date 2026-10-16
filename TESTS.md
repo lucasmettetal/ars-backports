@@ -110,3 +110,19 @@ Mise en place : `/give @p ars_backports:enchanters_fishing_rod`, un livre de sor
 | P10 | Recette | Enchanting Apparatus : canne vanilla (enchantée) + 2 blocs d'or + 2 blocs de Source | canne d'enchanteur, enchantements conservés | [ ] |
 | P11 | Multijoueur | un autre joueur regarde | il voit le flotteur et la ligne ; texture « lancée » seulement pour le porteur | [ ] |
 | P12 | Serveur dédié | P2, P5, P6, P8 sur `runServer` | identique, aucun crash | [ ] |
+
+# Checklist de tests — glyphe Pantomime
+
+Mise en place : `/give @p ars_backports:glyph_pantomime`, livre de sorts, Scribes Table ; en créatif tous les glyphes sont connus.
+
+| # | Test | Procédure | Attendu | État |
+|---|---|---|---|---|
+| G1 | Glyphe visible | onglet des glyphes d'Ars, livre de sorts | « Glyph of Pantomime » / « Glyphe de Pantomime », icône officielle, rangé avec les formes | [ ] |
+| G2 | Apprentissage | en survie, clic droit avec l'item du glyphe ; ou recette à la Scribes Table (8 verres) | glyphe débloqué | [ ] |
+| G3 | Distance | sort `Pantomime → Break`, regarder à l'horizontale | casse le bloc à ~2 blocs devant les yeux, même en visant plus loin ou le vide | [ ] |
+| G4 | Regard vers le bas | même sort, regarder vers le sol (> 45°) | bloc à ~3 blocs dans la direction du regard | [ ] |
+| G5 | Amplify / Dampen | `Pantomime + Amplify → Break`, puis `Pantomime + Dampen → Break` | un bloc plus loin / plus près ; Dampen limité à 1 | [ ] |
+| G6 | Sensitive | `Pantomime + Sensitive → Break` dans le livre en main | contour du bloc ciblé, à la couleur du sort, avant de lancer | [ ] |
+| G7 | Effets visuels | lancer | burst de particules + lumière brève au point ciblé | [ ] |
+| G8 | Refus | inscrire `Pantomime → Break` sur le Gantelet ou la canne | refusé (c'est une forme) | [ ] |
+| G9 | Serveur dédié | G3, G5, G6 sur `runServer` | identique, aucun crash serveur | [ ] |
