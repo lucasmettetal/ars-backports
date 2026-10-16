@@ -24,6 +24,7 @@ précédentes**. Le mettre à jour à la fin de chaque étape (voir `CLAUDE.md`)
 | **Glyphe Pantomime** (forme) | ✅ codé, compilé, serveur dédié OK (glyphe + config enregistrés), icône officielle | `8036644` | G1–G9 **à faire** |
 | **Glyphe Bubble** (effet) + entité bulle | ✅ codé, compilé, serveur dédié OK, client démarre, textures officielles | `85016a7` | B1–B12 **à faire** |
 
+| **Section C (🟢)** : apprivoisement au clic droit, listes noires/blanches (Intangible, rituels), Underfoot, rituels météo/heure toutes dimensions | ✅ codé, compilé, mixins appliqués | voir `git log` | C1–C8 **à faire** |
 | **Section B (🟢)** : Dominion dispenser, bocaux au distributeur/piston, grilles, Source Lamp, Plush, tableaux, Stencil + motifs, panneaux archwood | ✅ codé, compilé, serveur + client OK, assets officiels | voir `git log` | D1–D4, K1–K14 **à faire** |
 | **Mixins** + améliorations des Mob Jars d'Ars (section A) | ✅ codé, compilé, mixins appliqués serveur + client | `93925f4` | J12–J17 **à faire** |
 
@@ -72,6 +73,7 @@ enregistrés, configs `config/ars_backports/glyph_*.toml` créées, aucune erreu
 | `.../registry/ModBlocks.java`, `.../block/*.java` | grilles, Source Lamp, Starbuncle Plush (§4.7) |
 | `.../registry/ModDecorations.java`, `.../mixin/PaintingDropMixin.java` | tableaux, motifs de bannière + Ars Stencil (§4.7) |
 | `.../mixin/SignBlockEntityTypeMixin.java`, `data/forge/tags/items/logs/archwood_stripped.json` | panneaux archwood (§4.7) |
+| `.../event/TameItemInteractions.java`, `.../ModTags.java`, `.../mixin/glyph/*`, `.../mixin/ritual/*`, `data/ars_nouveau/tags/**` | améliorations de confort de la section C (§4.8) |
 | `build.gradle` | ForgeGradle `[6.0,6.2)` (résolu 6.0.54) + MixinGradle 0.7.38 (§4.6), toolchain Java 17, mappings officiels, runs client/server (+ propriétés `mixin.env.remapRefMap`/`refMapRemappingFile`, nécessaires pour que les mixins de Curios/Ars fonctionnent en dev), dépôts BlameJared / Maven Central / Curios / GeckoLib filtrés par groupe, Ars en `implementation`, Curios + GeckoLib + MixinExtras en `runtimeOnly` (dépendances d'Ars, dev uniquement), processeur Mixin, `MixinConfigs` dans le manifeste, `-Xlint:deprecation` |
 | `gradle.properties` | MC 1.20.1, Forge 47.4.10 (`[47.4,)`), Ars `4.12.7.264` (`[4.12.7,)`), dev : Curios `5.14.1+1.20.1`, GeckoLib `4.8.4`, MixinExtras `0.4.1` ; processeur Mixin `0.8.5` ; modid `ars_backports`, `LGPL-3.0-only`, version 0.1.0 |
 | `src/main/java/fr/lucas/arsbackports/ArsBackports.java` | `@Mod` ; enregistre `ModItems.ITEMS` ; `FMLCommonSetupEvent` → `enqueueWork(JarBehaviors::register)` ; ajoute Gauntlet et canne à l'onglet Ars (`CreativeTabRegistry.BLOCKS`, id `ars_nouveau:general`) |
@@ -299,6 +301,28 @@ Blocs dans `registry/ModBlocks` (`SIMPLE_BLOCK_ITEMS` → `BlockItem` automatiqu
   Pas de tags vanilla de panneaux (comme l'officiel). Recettes : planches d'archwood + bâton (×3) ; bûches d'archwood
   écorcées + chaînes (×6), via le tag ajouté `forge:logs/archwood_stripped` (copie du `c:logs/archwood_stripped` 1.21).
 
+### 4.8 Améliorations de confort sur Ars (section C, 🟢, 2026-10-16)
+Commits 1.21 retrouvés avec `git log --grep` sur un clone complet de `main` ; diffs reproduits à l'identique.
+- **Donner l'objet d'apprivoisement au clic droit** (#1681, `event/TameItemInteractions`, sans Mixin :
+  `PlayerInteractEvent.EntityInteract`, déclenché juste avant `mobInteract`, là où le 1.21 ajoute le code) :
+  pépite d'or à un Starbuncle sauvage (main vide) ou à un Gift Starbuncle ; drop de Wilden (`ItemTagProvider.WILDEN_DROP_TAG`)
+  à un Drygmy sauvage (`BEING_TAMED`). `hasInfiniteMaterials` (1.21) → `getAbilities().instabuild`.
+  Nécessite GeckoLib en **`compileOnly`** (les entités d'Ars implémentent `GeoEntity`) : aucune dépendance ajoutée à l'exécution.
+- **Tags de liste noire / blanche** (ids identiques au 1.21, dans `data/ars_nouveau/tags/`, constantes `ModTags`) :
+  `ars_nouveau:intangible_blacklist` (blocs, bedrock par défaut), `breed_blacklist`, `overgrowth_blacklist`,
+  `deny_spawn_ritual_blacklist`, `deny_spawn_ritual_whitelist` (entités, vides par défaut). Mixins :
+  `glyph.IntangibleBlacklistMixin` (corps de `EffectIntangible#onResolveBlock` remplacé par celui du 1.21 : tag au lieu de
+  bedrock + correctif du test de récolte sur chaque position de l'AOE, #1961), `ritual.BreedBlacklistMixin` (`@Redirect`
+  `Animal#getAge` → 1 si blacklisté : équivaut au `continue` 1.21), `ritual.OvergrowthBlacklistMixin` (`@Redirect`
+  `AgeableMob#isBaby`, seul appel du tick), `ritual.DenySpawnTagsMixin` (condition de `DenySpawnRitual#denySpawn` = 1.21 :
+  monstre **ou** liste blanche, et pas liste noire). Note : la liste noire du Containment Jar (items) et celle de Toss
+  **existent déjà** en 4.12.7 — rien à faire.
+- **Underfoot** (#1957, `glyph.UnderfootEntityMixin`, `@Redirect` de `onResolveEffect` dans `onCast` et `onCastOnEntity`
+  comme le 1.21) : cible la monture du lanceur, sinon la première entité juste sous/autour de lui, sinon le bloc dessous.
+- **Rituels météo/heure dans toutes les dimensions** (#2101, MC-188578, `ritual.GlobalWeatherTimeMixin` sur
+  Cloudshaper, Moonfall, Sunrise) : `@ModifyVariable` au stockage de l'unique `ServerLevel` local du `tick` →
+  `getServer().overworld()`, ce que fait le 1.21.
+
 ## 5. Méthodes réutilisables
 ### 5.1 Conversion des modèles GeckoLib → JSON vanilla
 Les items officiels 1.21 utilisent GeckoLib (`models/item/<item>.json` avec `"parent": "builtin/entity"` +
@@ -330,12 +354,14 @@ configs « not correct. Correcting », `Failed to load properties from file: ser
 ## 6. Prochaines actions exactes
 Suivre « Ordre de travail » de `BACKPORT_ROADMAP.md` sans attendre de tests (playtest global plus tard) :
 1. ~~Section B, éléments 🟢~~ — fait le 2026-10-16 (§4.6, §4.7).
-2. **Section C, éléments 🟢** (prochain) : donner des objets aux Starbuncles/Drygmies au clic droit (commit 1.21 #1681),
-   listes noires par tags (Toss, Intangible, rituels Overgrowth/Breeding/Sanctuary, items du Containment Jar), Underfoot
-   sous le joueur et ses montures, rituels météo/heure dans les autres dimensions. Pour chacun : retrouver le commit
-   1.21 (`git log --grep` dans un clone complet de `main`, cf. §11), lire le diff, porter par Mixin ciblé.
-3. Puis Windburst, bateau en archwood, autres 🟡 ; correctifs (D).
-4. Avant la publication (seulement avec l'utilisateur) : choisir une version (`mod_version`, actuellement 0.1.0), relire `README.md`.
+2. ~~Section C, éléments 🟢~~ — fait le 2026-10-16 (§4.8).
+3. **Glyphe Windburst** (prochain) : `common/spell/effect/EffectWindburst.java` (branche `main`, commits « Add windburst »
+   2025-02-07 et « fix: windburst stuff » #1646). Il fait exploser une `WindCharge` factice avec
+   `SimpleExplosionDamageCalculator` (1.21 uniquement) et les particules/sons de la Wind Charge : à recréer en 1.20.1
+   (recul des entités sans dégâts de blocs, `ExplosionDamageCalculator` maison ou poussée manuelle), à documenter comme adaptation.
+4. **Bateau en archwood** (+ bateau coffre si présent en 1.21 : `ArchwoodBoat`, `ArchwoodBoatItem`, `ArchwoodBoatRenderer`).
+5. Autres 🟡 de la roadmap ; correctifs (D).
+6. Avant la publication (seulement avec l'utilisateur) : choisir une version (`mod_version`, actuellement 0.1.0), relire `README.md`.
 
 ## 7. Environnement
 - Java **Temurin 17.0.20.1+1**, Gradle 8.8 (wrapper), ForgeGradle 6.0.54, Forge 1.20.1-47.4.10, mappings `official`,

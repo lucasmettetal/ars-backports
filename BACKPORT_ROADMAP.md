@@ -18,8 +18,8 @@ Légende difficulté : 🟢 facile · 🟡 moyenne · 🟠 difficile · 🔴 tr�
 
 ## Ordre de travail (convenu le 2026-10-16)
 1. ~~Mise en place des Mixins, puis section A~~ — fait le 2026-10-16.
-2. ~~Les 🟢 de B~~ (fait le 2026-10-16) ; **les 🟢 de C** (prochain).
-3. Windburst, bateau en archwood, puis les 🟡 restants.
+2. ~~Les 🟢 de B et C~~ — faits le 2026-10-16.
+3. **Windburst, bateau en archwood** (prochain), puis les 🟡 restants.
 4. Correctifs (D) choisis.
 5. Les 🔴 seulement si l'utilisateur le demande. Playtest global par l'utilisateur quand beaucoup de contenu est prêt.
 
@@ -43,6 +43,10 @@ Légende difficulté : 🟢 facile · 🟡 moyenne · 🟠 difficile · 🔴 tr�
 | B — **Tableaux** Starbuncle (animé) et Drygmy au repos | 2026-10-16 | registre 1.20.1 + `PaintingDropMixin` |
 | B — **Ars Stencil + 8 motifs de bannière** | 2026-10-16 | la 4.12.7 n'avait aucun motif |
 | B — **Panneaux archwood** (classiques + suspendus) | 2026-10-16 | la 4.12.7 n'en avait aucun ; `SignBlockEntityTypeMixin` |
+| C — **Donner l'objet d'apprivoisement au clic droit** (Starbuncle, Drygmy) | 2026-10-16 | événement Forge, sans Mixin |
+| C — **Listes noires/blanches** : Intangible (+ correctif AOE), Fertility, Overgrowth, Sanctuary | 2026-10-16 | tags aux ids 1.21 (`ars_nouveau:*`) ; Toss et Containment Jar existaient déjà en 4.12.7 |
+| C — **Underfoot** sur la monture / l'entité dessous | 2026-10-16 | |
+| C — **Rituels météo/heure** dans toutes les dimensions | 2026-10-16 | |
 
 Note : l'effet **Soaked** existe déjà en 4.12.7 (posé par Conjure Water, avec son mixin) — rien à porter
 (le classement initial par noms de fichiers l'avait compté à tort comme nouveau).
@@ -66,10 +70,6 @@ Note : l'effet **Soaked** existe déjà en 4.12.7 (posé par Conjure Water, avec
 ## C. Améliorations de confort sur des éléments existants d'Ars (Mixins)
 | Élément | Difficulté | Notes |
 |---|---|---|
-| Donner des objets aux Starbuncles/Drygmies au clic droit | 🟢 | peut-être sans Mixin (événement d'interaction) |
-| Listes noires (tags) : Toss, Intangible, rituels Overgrowth/Breeding/Sanctuary, Containment Jar (items) | 🟢–🟡 | Mixin dans chaque glyphe/rituel pour lire le tag |
-| Underfoot cible sous le joueur et ses montures | 🟢 | |
-| Rituels météo/heure dans les autres dimensions | 🟢 | |
 | Source jars reliés aux tourelles | 🟡 | |
 | Rune lancée sur une entité : résout directement sur elle | 🟡 | |
 | Glyphes qui fonctionnent entre dimensions (warp, runes, projectiles) | 🟠 | plusieurs glyphes touchés |

@@ -8,12 +8,18 @@
     "BubbleWetEntityMixin",
     "PaintingDropMixin",
     "SignBlockEntityTypeMixin",
+    "glyph.IntangibleBlacklistMixin",
+    "glyph.UnderfootEntityMixin",
     "jar.JarInventoryOutputMixin",
     "jar.JarPistonDestroyMixin",
     "jar.MobJarContainerMixin",
     "jar.MobJarItemHandlerMixin",
     "jar.PandaInventoryOutputMixin",
-    "jar.PassiveJarBehaviorMixin"
+    "jar.PassiveJarBehaviorMixin",
+    "ritual.BreedBlacklistMixin",
+    "ritual.DenySpawnTagsMixin",
+    "ritual.GlobalWeatherTimeMixin",
+    "ritual.OvergrowthBlacklistMixin"
   ],
   "client": [
     "client.MobJarRendererMixin"

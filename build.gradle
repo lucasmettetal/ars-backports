@@ -101,6 +101,9 @@ dependencies {
     // Not dependencies of Ars Backports (not in our mods.toml, not on the compile classpath).
     runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}")
     runtimeOnly fg.deobf("software.bernie.geckolib:geckolib-forge-${minecraft_version}:${geckolib_version}")
+    // Compile-time only: some Ars classes we reference (Starbuncle, Drygmy...) implement GeckoLib interfaces.
+    // Ars already requires GeckoLib at runtime, so this adds no dependency to Ars Backports.
+    compileOnly fg.deobf("software.bernie.geckolib:geckolib-forge-${minecraft_version}:${geckolib_version}")
     // Ars normally jar-in-jars MixinExtras, but its Maven jar does not contain it.
     runtimeOnly "io.github.llamalad7:mixinextras-forge:${mixinextras_version}"
 

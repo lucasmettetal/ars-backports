@@ -30,6 +30,10 @@ mixins where 1.21 changed Ars' own blocks and behaviors.
   through, buckets work through them), the **Source Lamp** (toggled by redstone pulses, brightness set with Light),
   the **Starbuncle Plush**, the **Starbuncle** and **Resting Drygmy** paintings (Enchanting Apparatus), and the
   **Ars Stencil** with the 8 Ars banner patterns, and **archwood signs and hanging signs**.
+- **Quality of life from 1.21**: hand a gold nugget / Wilden drop to wild Starbuncles and Drygmies; Underfoot targets
+  your mount or the entity below you; weather and time rituals work in every dimension; new tags (same ids as 1.21):
+  `ars_nouveau:intangible_blacklist`, `breed_blacklist`, `overgrowth_blacklist`, `deny_spawn_ritual_blacklist` /
+  `_whitelist`; Intangible respects harvest levels on every block of its AOE.
 
 More backports are planned, see [BACKPORT_ROADMAP.md](BACKPORT_ROADMAP.md).
 

@@ -185,3 +185,16 @@ Mise en place : `/give @p ars_backports:glyph_bubble`, livre de sorts. Sorts con
 | K12 | Serveur dédié | K3, K5, K8, K10 sur `runServer` | identique, aucun crash | [ ] |
 | K13 | Panneaux archwood | crafter, poser au sol / au mur, écrire | texture archwood, écran d'édition, le panneau mural redonne l'item | [ ] |
 | K14 | Panneaux suspendus | crafter (chaînes + bûches écorcées), poser au plafond / au mur, écrire | modèle suspendu archwood, écran d'édition des panneaux suspendus | [ ] |
+
+# Checklist de tests — améliorations de confort (section C)
+
+| # | Test | Procédure | Attendu | État |
+|---|---|---|---|---|
+| C1 | Starbuncle | clic droit avec une pépite d'or sur un Starbuncle sauvage | il prend la pépite (1) et s'apprivoise comme avec une pépite jetée | [ ] |
+| C2 | Drygmy | clic droit avec un drop de Wilden sur un Drygmy sauvage | début de l'apprivoisement, item consommé (pas en créatif) | [ ] |
+| C3 | Intangible | `Touch + Intangible + AOE` sur un mur avec de la bedrock | la bedrock n'est jamais traversée ; les blocs non récoltables de l'AOE non plus | [ ] |
+| C4 | Fertility | ajouter une vache au tag `ars_nouveau:breed_blacklist` (datapack) | le rituel ne fait plus reproduire les vaches | [ ] |
+| C5 | Overgrowth (bloc d'os) | bébé dans `ars_nouveau:overgrowth_blacklist` | n'est pas vieilli | [ ] |
+| C6 | Sanctuary | `ars_nouveau:deny_spawn_ritual_whitelist` avec un animal ; blacklist avec un monstre | l'animal ne spawn plus naturellement ; le monstre si | [ ] |
+| C7 | Underfoot | sur un cheval : `Underfoot → Heal` | soigne le cheval ; sans monture et sans entité dessous : bloc dessous | [ ] |
+| C8 | Rituels dans le Nether | Cloudshaper / Sunrise / Moonfall dans le Nether | la météo / l'heure de l'Overworld change | [ ] |
