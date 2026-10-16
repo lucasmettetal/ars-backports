@@ -21,7 +21,7 @@ précédentes**. Le mettre à jour à la fin de chaque étape (voir `CLAUDE.md`)
 | **Enchanter's Gauntlet** (étapes B–F) | ✅ codé, compilé, serveur dédié OK, assets officiels | `ec13911` → `2baa17c` | B (onglet, texture, noms) et rendu du modèle **validés par l'utilisateur** ; 5–36 **à faire** |
 | **Mob Jar** : Sniffer, Chat, Golem de neige | ✅ codé, compilé, serveur dédié OK | `5f53d80` | J1–J11 **à faire** |
 | **Enchanter's Fishing Rod** | ✅ codé, compilé, serveur dédié OK, assets officiels | `2ee04f1` | P1–P12 **à faire** |
-| **Glyphe Pantomime** (forme) | ✅ codé, compilé, serveur dédié OK (glyphe + config enregistrés), icône officielle | voir `git log` (« pantomime ») | G1–G9 **à faire** |
+| **Glyphe Pantomime** (forme) | ✅ codé, compilé, serveur dédié OK (glyphe + config enregistrés), icône officielle | `8036644` | G1–G9 **à faire** |
 | Glyphe Bubble | ⏳ prochain | — | — |
 
 Dernier résultat : **2026-10-16 — `gradlew.bat build` → BUILD SUCCESSFUL, 0 avertissement javac** ;
