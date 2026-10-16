@@ -1,51 +1,87 @@
 # Backport Roadmap
 
 L'utilisateur décide de ce qui est ajouté. État détaillé de chaque fonctionnalité : `HANDOFF.md` §1.
+**À mettre à jour à la fin de chaque session** (demande de l'utilisateur, 2026-10-16).
 
-Classement établi le 2026-10-09 en comparant les branches Ars Nouveau `1.20` (4.12.7, `2c74064`) et `main`
-(5.x / 1.21.1) — liste des glyphes, modèles d'items, blockstates et classes Java — puis en lisant le code de chaque
-candidat. Chaque backport fera l'objet d'une analyse détaillée 1.21.1 vs 4.12.7 avant d'être codé.
+Sources de ce classement (2026-10-16) : comparaison des branches Ars Nouveau `1.20` (4.12.7) et `main` (5.13.3) —
+fichiers ajoutés, notes de version de chaque release depuis la 5.9 (historique de `changelog.md`), titres des commits
+avant. Les deux branches ont divergé le **2024-09-13** : depuis, `main` a reçu 945 commits, `1.20` 27 (maintenance,
+dernier le 2025-06-23). La liste n'est pas exhaustive pour les petits correctifs.
 
-**Contrainte commune** : textures/modèles Ars = All Rights Reserved (README : « Addon authors are encouraged to reuse
-Ars Nouveau assets and to reach out in the discord »). Depuis le 2026-10-13, assets officiels utilisés et crédités (voir HANDOFF « Assets »).
-Les éléments décoratifs (⚠️) redeviennent envisageables, à décider avec l'utilisateur.
+**Contexte des décisions** :
+- assets officiels Ars autorisés et crédités (2026-10-13) ;
+- **Mixins autorisés** (2026-10-16) : ce qui était impossible car il fallait modifier Ars devient faisable (règles : `CLAUDE.md`) ;
+- toujours **exclu par l'utilisateur** : ce qui est trop compliqué, notamment la nouvelle dimension (Planarium) ;
+- aucune publication en ligne sans validation de l'utilisateur (qui fera valider par l'équipe d'Ars).
 
-## En cours
-1. **Enchanter's Gauntlet** — codé (étapes A à F), assets officiels ; tests en jeu à faire (`TESTS.md`).
-2. **Mob Jar** (Sniffer, Chat, Golem de neige) — codé le 2026-10-13 ; tests J1–J11 à faire.
-3. **Enchanter's Fishing Rod** — codé le 2026-10-13, assets officiels ; tests P1–P12 à faire.
-4. **Glyphe Pantomime** — codé le 2026-10-16, icône officielle ; tests G1–G9 à faire.
-5. **Glyphe Bubble** — codé le 2026-10-16, textures officielles ; tests B1–B12 à faire. Tous les ✅ sont faits : la suite (⚠️) se décide avec l'utilisateur.
+Légende difficulté : 🟢 facile · 🟡 moyenne · 🟠 difficile · 🔴 très difficile.
 
-## ✅ Faisable, ordre proposé
-| # | Fonctionnalité | Difficulté | Notes |
+## ✅ Fait (codé, compilé, serveur dédié OK — tests en jeu dans `TESTS.md`)
+| Fonctionnalité | Date | Remarque |
+|---|---|---|
+| Enchanter's Gauntlet | 2026-10-06/13 | modèle et texture officiels ; rendu validé par l'utilisateur |
+| Mob Jar : Sniffer, Chat, Golem de neige | 2026-10-13 | |
+| Enchanter's Fishing Rod | 2026-10-13 | Lure / Luck of the Sea fonctionnels (pas dans l'officiel) |
+| Glyphe Pantomime (forme) | 2026-10-16 | effets visuels = burst de Touch 4.12.7 |
+| Glyphe Bubble + entité bulle | 2026-10-16 | sans l'effet « mouillé » (était Mixin, voir A) |
+
+## A. Compléments de ce qui est fait (rendus possibles par les Mixins)
+| Élément | Mixin | Difficulté | Notes |
 |---|---|---|---|
-| 2 ✔ | Mob Jar (fait 2026-10-13) : **Sniffer** (graines anciennes), **Chat** (signal redstone si apprivoisé + carte des chats), **Golem de neige** (boule de neige sur signal) | facile | pur code, aucun asset ; `JarBehaviorRegistry.register(EntityType, JarBehavior)` est public en 4.12.7 ; ces mobs existent en 1.20.1 |
-| 3 ✔ | **Enchanter's Fishing Rod** (fait 2026-10-13) + `EnchantedHook` | moyenne | ~250 lignes ; mêmes mécanismes `ICasterTool` que le Gauntlet ; Data Components → NBT/SpellCaster |
-| 4 ✔ | Glyphe **Pantomime** (fait 2026-10-16 ; forme : lance sur un point devant le joueur) | facile–moyenne | timeline de particules 1.21 → particules existantes d'Ars 4.12.7 ; icône officielle ; recette de glyphe |
-| 5 ✔ | Glyphe **Bubble** (fait 2026-10-16) + `BubbleEntity` | moyenne | ~350 lignes ; rendu simple sans GeckoLib ; l'aspect « mouillé » officiel passe par un Mixin → omis |
+| Bulle : passager « mouillé » (feu éteint, comme sous la pluie) | oui (`Entity#isInWaterRainOrBubble`) | 🟢 | reproduit `EntityMixin` 1.21 |
+| Effet **Soaked** (posé par Conjure Water en 1.21) | oui (Conjure Water d'Ars + même mixin `Entity`) | 🟡 | nouvel effet de potion + modification d'un glyphe d'Ars |
+| Comportements Mob Jar d'Ars **désactivables par redstone** (1.21) | oui (comportements d'Ars) | 🟡 | les nôtres le respectent déjà (Sniffer) |
+| Bocaux : changements de Poulet / Panda / bocal du commit « more jar behaviors » | oui | 🟡 | à analyser (insertion dans les inventaires adjacents ?) |
 
-## ⚠️ Faisable mais adapté (pas identique)
-| Fonctionnalité | Problème |
-|---|---|
-| Glyphe **Windburst** | basé sur la Wind Charge (absente en 1.20.1) : à recréer (souffle sans dégâts de blocs), sans particules/sons d'origine |
-| **Source Lamp** | hérite de `CopperBulbBlock` (1.21) : comportement à réécrire ; assets |
-| **Grilles** (archwood, gold, sourcestone, smooth sourcestone), **archwood hanging sign** | simples, surtout des assets |
-| **Ars Stencil** (motif de bannière) | simple, intérêt = texture |
-| **Bateau en archwood** | type de bateau non extensible en 1.20.1 → entité dédiée ; assets |
-| **Starbuncle plush**, **Decor Blossom** | 100 % décoratifs → seulement avec les assets officiels |
+## B. Nouveau contenu 1.21
+| Élément | Mixin | Difficulté | Notes |
+|---|---|---|---|
+| Glyphe **Windburst** | non | 🟡 | Wind Charge absente en 1.20.1 → rafale recréée (recul sans dégâts de blocs), sons/particules approchés |
+| **Archwood hanging signs** | non | 🟢 | panneaux suspendus (les panneaux simples existent en 4.12.7, à vérifier) |
+| **Grilles** (archwood, or, sourcestone, sourcestone lisse) | non | 🟢 | `ItemGrate` : laisse passer les items vers le bloc dessous |
+| **Source Lamp** | non | 🟢 | comportement de l'ampoule en cuivre 1.21 à réécrire + `ILightable` |
+| **Ars Stencil** (motif de bannière) | non | 🟢 | |
+| **Starbuncle Plush** | non | 🟢 | décoratif |
+| **Tableaux** Drygmy et Starbuncle | non | 🟢 | décoratifs |
+| **Bateau en archwood** | non | 🟡 | entité dédiée (types de bateau non extensibles en 1.20.1) |
+| **Dominion dispenser** | non | 🟢 | comportement de distributeur pour la baguette de domination (~45 lignes) |
+| **Warpbuncle** (Starbuncles qui empruntent les portails de téléportation) | oui (pathfinding d'Ars) | 🟡 | à analyser |
+| Perk **Unbreakable** (armures d'Ars) | oui (`ItemStack#isDamageableItem`) | 🟡 | + enregistrement du perk et de sa recette |
+| **Repository Catalog** | probablement | 🟠 | bloc + GUI + réseau, lié au stockage d'Ars |
+| **Alakarkinos** (crabe, charm, chapeau, recettes) | non | 🔴 | mob complet, IA à états, recettes, intégration JEI ; modèle GeckoLib (Ars dépend déjà de GeckoLib) |
+| **Spell Styles** (particules et sons personnalisables) → débloque **Prestidigitation** (glyphe, enchantement) et **Decor Blossom** | oui, beaucoup | 🔴 | refonte du cœur du rendu des sorts + GUI + données ; très invasif |
+| **Nouveau livre de documentation** | oui | 🔴 | remplace tout le système d'Ars ; faible intérêt |
+| **Planarium**, projecteur, Scryer, `dim_boundary` | oui | 🔴 | **exclu par l'utilisateur** (nouvelle dimension) |
+| Mob Jar Armadillo, Breeze | — | — | **impossible** : mobs absents de 1.20.1 |
 
-## ❌ Exclus
-| Fonctionnalité | Raison |
-|---|---|
-| Planarium / Planarium Projector / Scryer Planarium / `dim_boundary` | nouvelle dimension + rendu de mini-monde (exclu par l'utilisateur) |
-| Timelines de particules / styles de sort, Prestidigitation (qui en dépend) | cœur du système de sorts → Mixins |
-| Nouveau système de documentation | système complet remplaçant celui d'Ars |
-| Repository Catalog | stockage + GUI + réseau, conflit probable avec le stockage 4.12.7 |
-| Alakarkinos (crabe, charm, chapeau) | entité + IA + recettes + JEI/EMI + modèle animé, tout repose sur les assets |
-| Mob Jar Armadillo, Breeze | mobs inexistants en 1.20.1 |
-| Unbreakable perk, effet Soaked | uniquement par Mixin |
+## C. Améliorations de confort sur des éléments existants d'Ars (Mixins)
+| Élément | Difficulté | Notes |
+|---|---|---|
+| Donner des objets aux Starbuncles/Drygmies au clic droit | 🟢 | peut-être sans Mixin (événement d'interaction) |
+| Listes noires (tags) : Toss, Intangible, rituels Overgrowth/Breeding/Sanctuary, Containment Jar (items) | 🟢–🟡 | Mixin dans chaque glyphe/rituel pour lire le tag |
+| Underfoot cible sous le joueur et ses montures | 🟢 | |
+| Rituels météo/heure dans les autres dimensions | 🟢 | |
+| Pousser bocaux de Source / Containment Jar au piston (casser) et les poser au distributeur | 🟡 | |
+| Source jars reliés aux tourelles | 🟡 | |
+| Rune lancée sur une entité : résout directement sur elle | 🟡 | |
+| Glyphes qui fonctionnent entre dimensions (warp, runes, projectiles) | 🟠 | plusieurs glyphes touchés |
+| Enchanting Apparatus / Imbuement Chamber **orientables** | 🟠 | nouvelle propriété de bloc sur des blocs d'Ars + modèles/blockstates à remplacer |
+| Lectern de stockage : recherche améliorée, bundles, auto-import coupé par redstone, cache | 🟠 | GUI + réseau du stockage |
+| Interface du livre de sorts (liste continue, catégories, bouton info, raccourcis) | 🟠 | GUI d'Ars |
 
-## Autres pistes
-- Parcourir `changelog.md` de la branche `main` d'Ars pour d'éventuelles améliorations de qualité de vie,
-  en ne retenant que ce qui se fait sans modifier Ars ni ajouter de Mixin.
+## D. Correctifs de la 1.21 absents de la 1.20 (Mixins ciblés, au cas par cas)
+Exemples relevés : flèches de sort + Pierce (double lancer, traverse les blocs, crash au rechargement), duplication
+arc de sort + Infinity, duplication Interact + seaux, fuites de mémoire (sortie/retour en monde, portails), armure
+magique qui draine le mana sans rien réparer, Break qui supprime certains blocs (waystones, portes en fer — outil de
+repli pioche), dégâts avec Hex / chute / Bastion, familiers qui ciblent leur maître, dalles doubles de sourcestone,
+tomes appliquant leur réduction plusieurs fois, coût des augments mal configuré… 🟡 chacun : à lister précisément
+(diff du code 1.20 vs main) avant de choisir. Alternative à proposer à l'utilisateur : soumettre ces correctifs
+directement à la branche `1.20` d'Ars (pull requests), ce qui profiterait à tous sans addon.
+
+## Ce qui manque pour avancer
+- **Tests en jeu** (seul l'utilisateur peut jouer) : rien de ce qui est fait n'a encore été testé en jeu (`TESTS.md`),
+  hormis l'apparence du Gauntlet.
+- **Choix des priorités** par l'utilisateur dans A–D.
+- Techniquement, rien d'externe : le code (LGPL) et les assets (autorisés) sont publics, et la mise en place des
+  Mixins n'utilise que des outils publics (plugin MixinGradle, dépôt `repo.spongepowered.org`).
+  Optionnel : JEI/EMI ou Create en dev (`runtimeOnly`) pour tester les intégrations.
