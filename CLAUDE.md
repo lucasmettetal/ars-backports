@@ -29,7 +29,12 @@ Ne jamais commencer un élément ⚠️ ou ❌ de la roadmap sans accord explici
 - ne pas poursuivre une étape si le build échoue ; lire l'erreur entière, inspecter l'API réelle, corriger la cause
 - vérifier les APIs réelles avant utilisation (sources Ars `1.20` = 4.12.7, Forge `1.20.1`)
 - ne pas inventer de méthodes/classes ; pas de pseudo-code pour masquer une erreur
-- aucun Mixin ou Access Transformer sauf nécessité démontrée (et expliquée à l'utilisateur avant)
+- **Mixins autorisés depuis le 2026-10-16** (décision de l'utilisateur : « tu peux prendre les mixins … et tout autre
+  ressource nécessaire ; les créateurs sont ouverts aux addons »), ainsi que les ressources/outils de build nécessaires.
+  Règles : préférer d'abord l'API d'Ars, un événement Forge ou une surcharge ; un Mixin seulement quand c'est la seule
+  façon fidèle ; Mixins ciblés et minimaux (`@Inject`/`@ModifyReturnValue` plutôt que `@Overwrite`), un fichier par cible,
+  chacun documenté dans `HANDOFF.md` (cible, raison, comportement 1.21 reproduit). Ars 4.12.7 est la dernière version
+  1.20.1 : cibler ses classes est stable. Access Transformers : seulement si un Mixin `@Accessor` ne suffit pas.
 - compatibilité serveur dédié obligatoire : aucune classe client chargée côté serveur
 - éviter les dépendances inutiles (pas de GeckoLib, Curios, Patchouli, JEI… en dépendance)
 - ne jamais supprimer une fonctionnalité pour faire passer la compilation sans prévenir
@@ -42,6 +47,9 @@ Ne jamais commencer un élément ⚠️ ou ❌ de la roadmap sans accord explici
   `HANDOFF.md` (état, fichiers, détails techniques, **écarts avec l'officiel**, prochaine action), `TESTS.md`
   (checklist en jeu), `BACKPORT_ROADMAP.md`, `README.md` (liste des fonctionnalités), puis commit + push sur `main`
 - ne jamais affirmer dans la doc une chose non vérifiée (ex. tests en jeu non faits = « à faire »)
+- **à la fin de chaque session : mettre à jour `BACKPORT_ROADMAP.md`** (demande explicite du 2026-10-16), en plus de `HANDOFF.md`
+- **publication en ligne** (CurseForge, Modrinth, release GitHub…) : jamais sans confirmation de l'utilisateur, qui fera
+  valider par l'équipe d'Ars avant de poster
 
 ## Conventions de code
 - casters à Touch implicite (Gauntlet, canne) : implémenter `item/TouchCaster` (refus des formes, préfixe Touch sur une copie, tooltip)
@@ -49,7 +57,7 @@ Ne jamais commencer un élément ⚠️ ou ❌ de la roadmap sans accord explici
   dans `ClientSetup.onRegisterRenderers` ; ne pas appeler de classe client d'Ars (ex. `client.particle.ParticleUtil`) depuis le code commun
 - entités : `registry/ModEntities` (`DeferredRegister<EntityType<?>>`), classes dans `entity/`
 - ce que le 1.21 fait par Mixin ou événement interne d'Ars : chercher d'abord un équivalent Forge/vanilla (surcharge,
-  événement Forge, `startRiding(..., true)`…) et vérifier en bytecode ; sinon omettre et le documenter (jamais de Mixin sans accord)
+  événement Forge, `startRiding(..., true)`…) et vérifier en bytecode ; sinon Mixin (autorisé, voir « Principes »)
 - Mob Jar : un `JarBehavior` par mob dans `mobjar/`, enregistré dans `JarBehaviors.register()`
 - glyphes : une classe par glyphe dans `glyph/`, enregistrée dans `Glyphs.register()` (appelé dans le constructeur du mod) ;
   id `ars_backports:glyph_<nom>` ; fournir modèle, texture, `glyph_name`/`glyph_desc` (en_us + fr_fr), recette `ars_nouveau:glyph`

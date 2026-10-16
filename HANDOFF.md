@@ -34,7 +34,12 @@ enregistrés, configs `config/ars_backports/glyph_*.toml` créées, aucune erreu
 
 ## 2. Décisions et contexte donnés par l'utilisateur
 - **Cibles figées** : Minecraft 1.20.1, Forge 47.4.10, Java 17, Ars Nouveau 4.12.7 (`4.12.7.264`). Ne pas changer sans accord.
-- **Pas de Mixin, pas d'Access Transformer, pas de dépendance supplémentaire** sans accord explicite (aucun n'a été nécessaire).
+- **Mixins autorisés depuis le 2026-10-16** (et toute ressource nécessaire) : « tu peux prendre les mixins si tu y as accès
+  et tout autre ressource nécessaire. Les créateurs sont ouverts aux addons pour leurs mods. » Règles d'usage : `CLAUDE.md`
+  (« Principes »). Aucun Mixin n'existe encore dans le code (au 2026-10-16) ; il faudra d'abord ajouter la configuration
+  Mixin au build (plugin MixinGradle + `ars_backports.mixins.json`). Pas de nouvelle dépendance de mod sans accord.
+- **Publication** : l'utilisateur fera valider par l'équipe d'Ars avant de poster en ligne ; ne rien publier sans lui.
+- **Roadmap** : la mettre à jour à chaque fin de session (demande du 2026-10-16).
 - **Exclus par l'utilisateur** : ce qui est trop compliqué, notamment la nouvelle dimension (Planarium). Classement
   complet faisable / adapté / exclu dans `BACKPORT_ROADMAP.md`.
 - L'utilisateur a jugé le Gauntlet conforme et a demandé de **continuer sur le reste** (2026-10-13) sans attendre
