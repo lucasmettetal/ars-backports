@@ -183,3 +183,5 @@ Mise en place : `/give @p ars_backports:glyph_bubble`, livre de sorts. Sorts con
 | K10 | Stencil : métier à tisser | Ars Stencil dans le métier à tisser | 8 motifs d'Ars proposés | [ ] |
 | K11 | Bannière | appliquer un motif, poser la bannière | texture du motif ; infobulle « Red Fire School » / « Feu élémentaire (rouge) » | [ ] |
 | K12 | Serveur dédié | K3, K5, K8, K10 sur `runServer` | identique, aucun crash | [ ] |
+| K13 | Panneaux archwood | crafter, poser au sol / au mur, écrire | texture archwood, écran d'édition, le panneau mural redonne l'item | [ ] |
+| K14 | Panneaux suspendus | crafter (chaînes + bûches écorcées), poser au plafond / au mur, écrire | modèle suspendu archwood, écran d'édition des panneaux suspendus | [ ] |

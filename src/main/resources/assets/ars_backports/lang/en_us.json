@@ -147,5 +147,9 @@
   "block.minecraft.banner.ars_backports.spirals.brown": "Brown Spirals",
   "block.minecraft.banner.ars_backports.spirals.green": "Green Spirals",
   "block.minecraft.banner.ars_backports.spirals.red": "Red Spirals",
-  "block.minecraft.banner.ars_backports.spirals.black": "Black Spirals"
+  "block.minecraft.banner.ars_backports.spirals.black": "Black Spirals",
+  "block.ars_backports.archwood_sign": "Archwood Sign",
+  "block.ars_backports.archwood_wall_sign": "Archwood Wall Sign",
+  "block.ars_backports.archwood_hanging_sign": "Archwood Hanging Sign",
+  "block.ars_backports.archwood_hanging_wall_sign": "Archwood Wall Hanging Sign"
 }

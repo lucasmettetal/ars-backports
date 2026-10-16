@@ -46,6 +46,8 @@ public class ArsBackports {
             event.accept(ModItems.ENCHANTERS_GAUNTLET);
             event.accept(ModItems.ENCHANTERS_FISHING_ROD);
             ModBlocks.SIMPLE_BLOCK_ITEMS.forEach(block -> event.accept(block.get()));
+            event.accept(ModItems.ARCHWOOD_SIGN);
+            event.accept(ModItems.ARCHWOOD_HANGING_SIGN);
             event.accept(ModItems.ARS_STENCIL);
             ModDecorations.ALL_PAINTINGS.forEach(painting -> event.accept(ModDecorations.paintingItem(painting.getId())));
         }

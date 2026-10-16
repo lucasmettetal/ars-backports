@@ -24,7 +24,7 @@ précédentes**. Le mettre à jour à la fin de chaque étape (voir `CLAUDE.md`)
 | **Glyphe Pantomime** (forme) | ✅ codé, compilé, serveur dédié OK (glyphe + config enregistrés), icône officielle | `8036644` | G1–G9 **à faire** |
 | **Glyphe Bubble** (effet) + entité bulle | ✅ codé, compilé, serveur dédié OK, client démarre, textures officielles | `85016a7` | B1–B12 **à faire** |
 
-| **Section B (🟢)** : Dominion dispenser, bocaux au distributeur/piston, grilles, Source Lamp, Plush, tableaux, Stencil + motifs | ✅ codé, compilé, serveur + client OK, assets officiels | voir `git log` | D1–D4, K1–K12 **à faire** |
+| **Section B (🟢)** : Dominion dispenser, bocaux au distributeur/piston, grilles, Source Lamp, Plush, tableaux, Stencil + motifs, panneaux archwood | ✅ codé, compilé, serveur + client OK, assets officiels | voir `git log` | D1–D4, K1–K14 **à faire** |
 | **Mixins** + améliorations des Mob Jars d'Ars (section A) | ✅ codé, compilé, mixins appliqués serveur + client | `93925f4` | J12–J17 **à faire** |
 
 Section A de la roadmap terminée (2026-10-16). Suite : `BACKPORT_ROADMAP.md` « Ordre de travail » et §6 ci-dessous.
@@ -71,6 +71,7 @@ enregistrés, configs `config/ars_backports/glyph_*.toml` créées, aucune erreu
 | `.../registry/ModDispenserBehaviors.java` | comportements de distributeur 1.21 : bocaux, baguette de domination (§4.6) |
 | `.../registry/ModBlocks.java`, `.../block/*.java` | grilles, Source Lamp, Starbuncle Plush (§4.7) |
 | `.../registry/ModDecorations.java`, `.../mixin/PaintingDropMixin.java` | tableaux, motifs de bannière + Ars Stencil (§4.7) |
+| `.../mixin/SignBlockEntityTypeMixin.java`, `data/forge/tags/items/logs/archwood_stripped.json` | panneaux archwood (§4.7) |
 | `build.gradle` | ForgeGradle `[6.0,6.2)` (résolu 6.0.54) + MixinGradle 0.7.38 (§4.6), toolchain Java 17, mappings officiels, runs client/server (+ propriétés `mixin.env.remapRefMap`/`refMapRemappingFile`, nécessaires pour que les mixins de Curios/Ars fonctionnent en dev), dépôts BlameJared / Maven Central / Curios / GeckoLib filtrés par groupe, Ars en `implementation`, Curios + GeckoLib + MixinExtras en `runtimeOnly` (dépendances d'Ars, dev uniquement), processeur Mixin, `MixinConfigs` dans le manifeste, `-Xlint:deprecation` |
 | `gradle.properties` | MC 1.20.1, Forge 47.4.10 (`[47.4,)`), Ars `4.12.7.264` (`[4.12.7,)`), dev : Curios `5.14.1+1.20.1`, GeckoLib `4.8.4`, MixinExtras `0.4.1` ; processeur Mixin `0.8.5` ; modid `ars_backports`, `LGPL-3.0-only`, version 0.1.0 |
 | `src/main/java/fr/lucas/arsbackports/ArsBackports.java` | `@Mod` ; enregistre `ModItems.ITEMS` ; `FMLCommonSetupEvent` → `enqueueWork(JarBehaviors::register)` ; ajoute Gauntlet et canne à l'onglet Ars (`CreativeTabRegistry.BLOCKS`, id `ars_nouveau:general`) |
@@ -287,6 +288,16 @@ Blocs dans `registry/ModBlocks` (`SIMPLE_BLOCK_ITEMS` → `BlockItem` automatiqu
   générées ; le 1.21 n'a qu'un nom par motif et aucun pour « spirals »). Sécurité client (`ClientSetup.ensureBannerMaterials`) :
   `Sheets` remplit ses tables de matériaux une seule fois à son initialisation ; nos motifs y sont ajoutés s'ils manquent.
   Comme le 1.21, pas de texture de bouclier pour ces motifs. Recette : papier + essence d'abjuration.
+- **Panneaux archwood** (classiques + suspendus ; la 4.12.7 a des assets de panneau mais aucun bloc enregistré) :
+  `WoodType` `ars_backports:archwood` (`ModBlocks.ARCHWOOD`, `WoodType.register`), blocs **vanilla** `StandingSignBlock`,
+  `WallSignBlock`, `CeilingHangingSignBlock`, `WallHangingSignBlock` (ordre des arguments 1.20.1 : `Properties, WoodType`),
+  items `SignItem` / `HangingSignItem` (piles de 16). `mixin/SignBlockEntityTypeMixin` (`BlockEntityType#isValid`, HEAD) :
+  les types vanilla `SIGN` / `HANGING_SIGN` acceptent ces blocs — équivalent de `BlockEntityTypeAddBlocksEvent` NeoForge du
+  1.21 (absent de Forge 1.20.1) ; on garde ainsi block entities, renderers et écrans d'édition vanilla. Client :
+  `Sheets.addWoodType(ARCHWOOD)` (textures `entity/signs/archwood.png`, `entity/signs/hanging/archwood.png`,
+  `gui/hanging_signs/archwood.png`). Modèles de bloc = particule `ars_nouveau:block/archwood_planks` (texture d'Ars 4.12.7).
+  Pas de tags vanilla de panneaux (comme l'officiel). Recettes : planches d'archwood + bâton (×3) ; bûches d'archwood
+  écorcées + chaînes (×6), via le tag ajouté `forge:logs/archwood_stripped` (copie du `c:logs/archwood_stripped` 1.21).
 
 ## 5. Méthodes réutilisables
 ### 5.1 Conversion des modèles GeckoLib → JSON vanilla
@@ -318,9 +329,11 @@ configs « not correct. Correcting », `Failed to load properties from file: ser
 
 ## 6. Prochaines actions exactes
 Suivre « Ordre de travail » de `BACKPORT_ROADMAP.md` sans attendre de tests (playtest global plus tard) :
-1. **Section B, éléments 🟢** : Dominion dispenser, Archwood hanging signs, grilles (`ItemGrate`), Source Lamp,
-   Ars Stencil, Starbuncle Plush, tableaux Drygmy/Starbuncle. Pour chacun : lire le code `main`, porter, assets officiels.
-2. **Section C, éléments 🟢** (Mixins/événements).
+1. ~~Section B, éléments 🟢~~ — fait le 2026-10-16 (§4.6, §4.7).
+2. **Section C, éléments 🟢** (prochain) : donner des objets aux Starbuncles/Drygmies au clic droit (commit 1.21 #1681),
+   listes noires par tags (Toss, Intangible, rituels Overgrowth/Breeding/Sanctuary, items du Containment Jar), Underfoot
+   sous le joueur et ses montures, rituels météo/heure dans les autres dimensions. Pour chacun : retrouver le commit
+   1.21 (`git log --grep` dans un clone complet de `main`, cf. §11), lire le diff, porter par Mixin ciblé.
 3. Puis Windburst, bateau en archwood, autres 🟡 ; correctifs (D).
 4. Avant la publication (seulement avec l'utilisateur) : choisir une version (`mod_version`, actuellement 0.1.0), relire `README.md`.
 

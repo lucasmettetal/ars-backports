@@ -147,5 +147,9 @@
   "block.minecraft.banner.ars_backports.spirals.brown": "Spirales (marron)",
   "block.minecraft.banner.ars_backports.spirals.green": "Spirales (vert)",
   "block.minecraft.banner.ars_backports.spirals.red": "Spirales (rouge)",
-  "block.minecraft.banner.ars_backports.spirals.black": "Spirales (noir)"
+  "block.minecraft.banner.ars_backports.spirals.black": "Spirales (noir)",
+  "block.ars_backports.archwood_sign": "Panneau Archwood",
+  "block.ars_backports.archwood_wall_sign": "Panneau Archwood mural",
+  "block.ars_backports.archwood_hanging_sign": "Panneau suspendu Archwood",
+  "block.ars_backports.archwood_hanging_wall_sign": "Panneau suspendu Archwood mural"
 }

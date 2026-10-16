@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "ars_backports:block/archwood_sign"
+    }
+  }
+}

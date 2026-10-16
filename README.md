@@ -29,7 +29,7 @@ mixins where 1.21 changed Ars' own blocks and behaviors.
 - **Decorations and blocks**: archwood, gold, sourcestone and smooth sourcestone **grates** (liquids and items pass
   through, buckets work through them), the **Source Lamp** (toggled by redstone pulses, brightness set with Light),
   the **Starbuncle Plush**, the **Starbuncle** and **Resting Drygmy** paintings (Enchanting Apparatus), and the
-  **Ars Stencil** with the 8 Ars banner patterns.
+  **Ars Stencil** with the 8 Ars banner patterns, and **archwood signs and hanging signs**.
 
 More backports are planned, see [BACKPORT_ROADMAP.md](BACKPORT_ROADMAP.md).
 

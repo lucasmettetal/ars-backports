@@ -1,6 +1,7 @@
 package fr.lucas.arsbackports.client;
 
 import fr.lucas.arsbackports.ArsBackports;
+import fr.lucas.arsbackports.registry.ModBlocks;
 import fr.lucas.arsbackports.registry.ModDecorations;
 import fr.lucas.arsbackports.registry.ModEntities;
 import fr.lucas.arsbackports.registry.ModItems;
@@ -48,6 +49,7 @@ public final class ClientSetup {
                     return (mainHand || offHand) && entity instanceof Player player && player.fishing != null ? 1.0F : 0.0F;
                 }));
         event.enqueueWork(ClientSetup::ensureBannerMaterials);
+        event.enqueueWork(() -> Sheets.addWoodType(ModBlocks.ARCHWOOD));
     }
 
     // Sheets fills its banner/shield material maps once, from the banner pattern registry, when the class is first

@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "sign",
+  "key": {
+    "#": {"item": "ars_nouveau:archwood_planks"},
+    "X": {"item": "minecraft:stick"}
+  },
+  "pattern": ["###", "###", " X "],
+  "result": {"item": "ars_backports:archwood_sign", "count": 3}
+}

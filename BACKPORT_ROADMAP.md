@@ -18,7 +18,7 @@ Légende difficulté : 🟢 facile · 🟡 moyenne · 🟠 difficile · 🔴 tr�
 
 ## Ordre de travail (convenu le 2026-10-16)
 1. ~~Mise en place des Mixins, puis section A~~ — fait le 2026-10-16.
-2. **Les 🟢 de B et C** (prochain).
+2. ~~Les 🟢 de B~~ (fait le 2026-10-16) ; **les 🟢 de C** (prochain).
 3. Windburst, bateau en archwood, puis les 🟡 restants.
 4. Correctifs (D) choisis.
 5. Les 🔴 seulement si l'utilisateur le demande. Playtest global par l'utilisateur quand beaucoup de contenu est prêt.
@@ -42,6 +42,7 @@ Légende difficulté : 🟢 facile · 🟡 moyenne · 🟠 difficile · 🔴 tr�
 | B — **Starbuncle Plush** | 2026-10-16 | |
 | B — **Tableaux** Starbuncle (animé) et Drygmy au repos | 2026-10-16 | registre 1.20.1 + `PaintingDropMixin` |
 | B — **Ars Stencil + 8 motifs de bannière** | 2026-10-16 | la 4.12.7 n'avait aucun motif |
+| B — **Panneaux archwood** (classiques + suspendus) | 2026-10-16 | la 4.12.7 n'en avait aucun ; `SignBlockEntityTypeMixin` |
 
 Note : l'effet **Soaked** existe déjà en 4.12.7 (posé par Conjure Water, avec son mixin) — rien à porter
 (le classement initial par noms de fichiers l'avait compté à tort comme nouveau).
@@ -52,7 +53,6 @@ Note : l'effet **Soaked** existe déjà en 4.12.7 (posé par Conjure Water, avec
 | Élément | Mixin | Difficulté | Notes |
 |---|---|---|---|
 | Glyphe **Windburst** | non | 🟡 | Wind Charge absente en 1.20.1 → rafale recréée (recul sans dégâts de blocs), sons/particules approchés |
-| **Archwood hanging signs** | non | 🟢 | panneaux suspendus (les panneaux simples existent en 4.12.7, à vérifier) |
 | **Bateau en archwood** | non | 🟡 | entité dédiée (types de bateau non extensibles en 1.20.1) |
 | **Warpbuncle** (Starbuncles qui empruntent les portails de téléportation) | oui (pathfinding d'Ars) | 🟡 | à analyser |
 | Perk **Unbreakable** (armures d'Ars) | oui (`ItemStack#isDamageableItem`) | 🟡 | + enregistrement du perk et de sa recette |
