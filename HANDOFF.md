@@ -24,7 +24,7 @@ précédentes**. Le mettre à jour à la fin de chaque étape (voir `CLAUDE.md`)
 | **Glyphe Pantomime** (forme) | ✅ codé, compilé, serveur dédié OK (glyphe + config enregistrés), icône officielle | `8036644` | G1–G9 **à faire** |
 | **Glyphe Bubble** (effet) + entité bulle | ✅ codé, compilé, serveur dédié OK, client démarre, textures officielles | `85016a7` | B1–B12 **à faire** |
 
-| **Mixins** + améliorations des Mob Jars d'Ars (section A) | ✅ codé, compilé, mixins appliqués serveur + client | voir `git log` (« mob jar mixins ») | J12–J17 **à faire** |
+| **Mixins** + améliorations des Mob Jars d'Ars (section A) | ✅ codé, compilé, mixins appliqués serveur + client | `93925f4` | J12–J17 **à faire** |
 
 Section A de la roadmap terminée (2026-10-16). Suite : `BACKPORT_ROADMAP.md` « Ordre de travail » et §6 ci-dessous.
 
