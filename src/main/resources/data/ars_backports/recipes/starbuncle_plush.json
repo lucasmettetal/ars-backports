@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "x": {"tag": "minecraft:wool"},
+    "y": {"item": "ars_nouveau:starbuncle_shards"}
+  },
+  "pattern": [" x ", "xyx", " x "],
+  "result": {"item": "ars_backports:starbuncle_plush", "count": 1}
+}

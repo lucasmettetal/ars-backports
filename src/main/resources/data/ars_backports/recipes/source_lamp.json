@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "b": {"tag": "forge:rods/blaze"},
+    "r": {"tag": "forge:dusts/redstone"},
+    "x": {"tag": "forge:gems/source"}
+  },
+  "pattern": [" x ", "xbx", " r "],
+  "result": {"item": "ars_backports:source_lamp", "count": 1}
+}

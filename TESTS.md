@@ -166,3 +166,20 @@ Mise en place : `/give @p ars_backports:glyph_bubble`, livre de sorts. Sorts con
 | D2 | Containment Jar au distributeur | idem avec un bocal contenant un mob | posé tourné à l'opposé du distributeur, mob conservé | [ ] |
 | D3 | Baguette de domination | distributeur + baguette liée, entité ou bloc devant | même effet qu'un clic droit du joueur avec la baguette | [ ] |
 | D4 | Piston | piston qui pousse un Source Jar / Containment Jar | le bocal se casse et tombe en item (contenu conservé selon la loot table d'Ars) | [ ] |
+
+# Checklist de tests — blocs et décorations (section B)
+
+| # | Test | Procédure | Attendu | État |
+|---|---|---|---|---|
+| K1 | Grilles : rendu | poser les 4 grilles dans les 6 directions | modèle et texture officiels, orientation correcte | [ ] |
+| K2 | Grille : items | jeter un item sur une grille horizontale | l'item tombe à travers | [ ] |
+| K3 | Grille : liquide | seau d'eau sur une grille, bloc d'air dessous | l'eau passe en dessous ; sur un chaudron vide : il se remplit | [ ] |
+| K4 | Grille : seau à travers | eau sous la grille, seau vide sur la grille | l'eau du dessous est récupérée | [ ] |
+| K5 | Source Lamp | levier sur la lampe : on / off / on | chaque front montant bascule allumée/éteinte | [ ] |
+| K6 | Source Lamp + Light | `Touch + Light + Dampen` sur la lampe | luminosité 14 ; comparateur = luminosité | [ ] |
+| K7 | Plush | poser dans les 4 directions | modèle officiel, forme de collision correcte | [ ] |
+| K8 | Tableaux : recette | Apparatus : tableau + éclat de Starbuncle (puis de Drygmy) | tableau Starbuncle (animé) / Drygmy au repos (4×4) | [ ] |
+| K9 | Tableau cassé | casser un tableau Starbuncle | redonne un tableau Starbuncle (pas un tableau aléatoire) | [ ] |
+| K10 | Stencil : métier à tisser | Ars Stencil dans le métier à tisser | 8 motifs d'Ars proposés | [ ] |
+| K11 | Bannière | appliquer un motif, poser la bannière | texture du motif ; infobulle « Red Fire School » / « Feu élémentaire (rouge) » | [ ] |
+| K12 | Serveur dédié | K3, K5, K8, K10 sur `runServer` | identique, aucun crash | [ ] |

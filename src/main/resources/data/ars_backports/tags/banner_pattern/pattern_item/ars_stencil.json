@@ -1,0 +1,36 @@
+{
+  "values": [
+    {
+      "id": "ars_backports:fire",
+      "required": false
+    },
+    {
+      "id": "ars_backports:water",
+      "required": false
+    },
+    {
+      "id": "ars_backports:earth",
+      "required": false
+    },
+    {
+      "id": "ars_backports:air",
+      "required": false
+    },
+    {
+      "id": "ars_backports:conjuration",
+      "required": false
+    },
+    {
+      "id": "ars_backports:manipulation",
+      "required": false
+    },
+    {
+      "id": "ars_backports:abjuration",
+      "required": false
+    },
+    {
+      "id": "ars_backports:spirals",
+      "required": false
+    }
+  ]
+}

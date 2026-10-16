@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {"item": "minecraft:paper"},
+    {"item": "ars_nouveau:abjuration_essence"}
+  ],
+  "result": {"item": "ars_backports:ars_stencil", "count": 1}
+}

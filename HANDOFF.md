@@ -24,6 +24,7 @@ précédentes**. Le mettre à jour à la fin de chaque étape (voir `CLAUDE.md`)
 | **Glyphe Pantomime** (forme) | ✅ codé, compilé, serveur dédié OK (glyphe + config enregistrés), icône officielle | `8036644` | G1–G9 **à faire** |
 | **Glyphe Bubble** (effet) + entité bulle | ✅ codé, compilé, serveur dédié OK, client démarre, textures officielles | `85016a7` | B1–B12 **à faire** |
 
+| **Section B (🟢)** : Dominion dispenser, bocaux au distributeur/piston, grilles, Source Lamp, Plush, tableaux, Stencil + motifs | ✅ codé, compilé, serveur + client OK, assets officiels | voir `git log` | D1–D4, K1–K12 **à faire** |
 | **Mixins** + améliorations des Mob Jars d'Ars (section A) | ✅ codé, compilé, mixins appliqués serveur + client | `93925f4` | J12–J17 **à faire** |
 
 Section A de la roadmap terminée (2026-10-16). Suite : `BACKPORT_ROADMAP.md` « Ordre de travail » et §6 ci-dessous.
@@ -68,6 +69,8 @@ enregistrés, configs `config/ars_backports/glyph_*.toml` créées, aucune erreu
 | `src/main/resources/ars_backports.mixins.json`, `.../mixin/**` | configuration et classes Mixin (§4.6) |
 | `.../mobjar/JarEntityItemHandler.java` | inventaire exposé par un bocal (§4.6) |
 | `.../registry/ModDispenserBehaviors.java` | comportements de distributeur 1.21 : bocaux, baguette de domination (§4.6) |
+| `.../registry/ModBlocks.java`, `.../block/*.java` | grilles, Source Lamp, Starbuncle Plush (§4.7) |
+| `.../registry/ModDecorations.java`, `.../mixin/PaintingDropMixin.java` | tableaux, motifs de bannière + Ars Stencil (§4.7) |
 | `build.gradle` | ForgeGradle `[6.0,6.2)` (résolu 6.0.54) + MixinGradle 0.7.38 (§4.6), toolchain Java 17, mappings officiels, runs client/server (+ propriétés `mixin.env.remapRefMap`/`refMapRemappingFile`, nécessaires pour que les mixins de Curios/Ars fonctionnent en dev), dépôts BlameJared / Maven Central / Curios / GeckoLib filtrés par groupe, Ars en `implementation`, Curios + GeckoLib + MixinExtras en `runtimeOnly` (dépendances d'Ars, dev uniquement), processeur Mixin, `MixinConfigs` dans le manifeste, `-Xlint:deprecation` |
 | `gradle.properties` | MC 1.20.1, Forge 47.4.10 (`[47.4,)`), Ars `4.12.7.264` (`[4.12.7,)`), dev : Curios `5.14.1+1.20.1`, GeckoLib `4.8.4`, MixinExtras `0.4.1` ; processeur Mixin `0.8.5` ; modid `ars_backports`, `LGPL-3.0-only`, version 0.1.0 |
 | `src/main/java/fr/lucas/arsbackports/ArsBackports.java` | `@Mod` ; enregistre `ModItems.ITEMS` ; `FMLCommonSetupEvent` → `enqueueWork(JarBehaviors::register)` ; ajoute Gauntlet et canne à l'onglet Ars (`CreativeTabRegistry.BLOCKS`, id `ars_nouveau:general`) |
@@ -254,6 +257,36 @@ et vérifiées par `javap` dans les jars résolus (§5.2). Les **écarts** avec 
   Seul changement : accesseurs 1.20.1 de `BlockSource` (`getLevel/getPos/getBlockState`).
 - Écarts : le Sniffer garde son compteur dans le bocal (le 1.21 utilise un Access Transformer sur
   `Sniffer.DATA_DROP_SEED_AT_TICK` ; notre version survit au rechargement, laissée telle quelle).
+
+### 4.7 Blocs et décorations (section B, 2026-10-16)
+Tous avec assets officiels (copiés de la branche `main`, références `ars_nouveau:` → `ars_backports:`), loot tables
+« drop self » officielles, recettes traduites au format 1.20.1 (`recipes/`, `"result": {"item": …}`, tags `forge:`).
+Blocs dans `registry/ModBlocks` (`SIMPLE_BLOCK_ITEMS` → `BlockItem` automatique dans `ModItems` + onglet créatif).
+- **Grilles** (`block/ItemGrate` : `archwood_grate`, `gold_grate`, `sourcestone_grate`, `smooth_sourcestone_grate`) :
+  un liquide source posé dessus descend dans / imbibe le bloc en dessous (ou remplit un chaudron) ; utiliser la grille
+  utilise le bloc du dessous (les seaux marchent à travers) ; items et projectiles la traversent (tags d'entités
+  `ars_backports:item_grate_passable` / `item_grate_collide`, vides comme l'officiel). Orientable dans les 6 directions.
+  **Écarts d'API** : `useItemOn`/`useWithoutItem` (1.21) → `use` ; chaudron via `BlockState#use` public (le 1.21 passe
+  par un mixin accessor) ; `BucketPickup`/`LiquidBlockContainer` sans paramètre joueur en 1.20.1. Pas de tag d'outil (comme l'officiel).
+  Recettes : barreaux de fer ×4 + bûche d'archwood (`forge:logs/archwood`) / lingot d'or / pierre de source (lisse).
+- **Source Lamp** (`block/SourceLamp`) : le 1.21 étend `CopperBulbBlock` (absent de 1.20.1) → logique de l'ampoule en
+  cuivre réécrite (`onPlace`/`neighborChanged` → `checkAndFlip` : chaque front montant bascule `LIT`), luminosité réglée par
+  le glyphe Light (`ILightable` : 15 − Dampen), signal comparateur = luminosité si allumée. **Écart** : les sons de
+  l'ampoule en cuivre n'existent pas en 1.20.1 → bascule silencieuse. Résistance 0 comme l'officiel (`Properties.of()`).
+  Recette : 3 gemmes de Source, bâton de blaze, redstone.
+- **Starbuncle Plush** (`block/StarbunclePlush`) : copie (forme, laine, `DirectionalModBlock` d'Ars). Recette : 4 laines + éclats de Starbuncle.
+- **Tableaux** (`registry/ModDecorations`, `DeferredRegister<PaintingVariant>`) : `starbuncle` (1×1, texture animée
+  `.mcmeta`) et `resting_drygmy` (4×4) ; données en 1.21, registre statique en 1.20.1 (tailles en pixels). Pas dans le tag
+  `minecraft:placeable` (comme l'officiel : pas de placement aléatoire). Obtention : Enchanting Apparatus (tableau + éclat
+  de Starbuncle / de Drygmy → tableau avec `{"EntityTag": {"variant": …}}`, NBT de sortie lu par `CraftingHelper` Forge),
+  et onglet créatif. `mixin/PaintingDropMixin` (1.21 `PaintingMixin`) : un tableau cassé redonne sa variante.
+- **Ars Stencil + 8 motifs de bannière** (`fire`, `water`, `earth`, `air`, `manipulation`, `conjuration`, `abjuration`,
+  `spirals`) : la 4.12.7 n'a aucun motif. `DeferredRegister<BannerPattern>` (hashname `ars_backports_<nom>`, stocké dans
+  le NBT des bannières), `BannerPatternItem` avec le tag `ars_backports:pattern_item/ars_stencil`, textures
+  `textures/entity/banner/*.png`. Noms : clés 1.20.1 `block.minecraft.banner.ars_backports.<motif>.<couleur>` (8 × 16,
+  générées ; le 1.21 n'a qu'un nom par motif et aucun pour « spirals »). Sécurité client (`ClientSetup.ensureBannerMaterials`) :
+  `Sheets` remplit ses tables de matériaux une seule fois à son initialisation ; nos motifs y sont ajoutés s'ils manquent.
+  Comme le 1.21, pas de texture de bouclier pour ces motifs. Recette : papier + essence d'abjuration.
 
 ## 5. Méthodes réutilisables
 ### 5.1 Conversion des modèles GeckoLib → JSON vanilla

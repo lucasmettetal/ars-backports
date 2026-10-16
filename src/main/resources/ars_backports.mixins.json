@@ -6,6 +6,7 @@
   "refmap": "ars_backports.refmap.json",
   "mixins": [
     "BubbleWetEntityMixin",
+    "PaintingDropMixin",
     "jar.JarInventoryOutputMixin",
     "jar.JarPistonDestroyMixin",
     "jar.MobJarContainerMixin",

@@ -4,6 +4,8 @@ import com.hollingsworth.arsnouveau.setup.registry.CreativeTabRegistry;
 import com.mojang.logging.LogUtils;
 import fr.lucas.arsbackports.glyph.Glyphs;
 import fr.lucas.arsbackports.mobjar.JarBehaviors;
+import fr.lucas.arsbackports.registry.ModBlocks;
+import fr.lucas.arsbackports.registry.ModDecorations;
 import fr.lucas.arsbackports.registry.ModDispenserBehaviors;
 import fr.lucas.arsbackports.registry.ModEntities;
 import fr.lucas.arsbackports.registry.ModItems;
@@ -21,7 +23,10 @@ public class ArsBackports {
 
     public ArsBackports(FMLJavaModLoadingContext context) {
         IEventBus modEventBus = context.getModEventBus();
+        ModBlocks.BLOCKS.register(modEventBus);
         ModItems.ITEMS.register(modEventBus);
+        ModDecorations.PAINTINGS.register(modEventBus);
+        ModDecorations.BANNER_PATTERNS.register(modEventBus);
         ModEntities.ENTITIES.register(modEventBus);
         Glyphs.register();
         modEventBus.addListener(this::commonSetup);
@@ -40,6 +45,9 @@ public class ArsBackports {
         if (event.getTabKey() == CreativeTabRegistry.BLOCKS.getKey()) {
             event.accept(ModItems.ENCHANTERS_GAUNTLET);
             event.accept(ModItems.ENCHANTERS_FISHING_ROD);
+            ModBlocks.SIMPLE_BLOCK_ITEMS.forEach(block -> event.accept(block.get()));
+            event.accept(ModItems.ARS_STENCIL);
+            ModDecorations.ALL_PAINTINGS.forEach(painting -> event.accept(ModDecorations.paintingItem(painting.getId())));
         }
     }
 }

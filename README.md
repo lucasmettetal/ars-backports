@@ -24,7 +24,12 @@ mixins where 1.21 changed Ars' own blocks and behaviors.
   for bonus damage. Extend Time / Amplify increase its duration and damage. Creatures inside a bubble count as wet.
 - **Mob Jar improvements** from 1.21: passive jar behaviors pause while the jar is powered; chickens and pandas put
   their eggs / slime balls into adjacent inventories; a jarred chest minecart or chest boat can be opened (sneak +
-  use) and is accessible to hoppers; jars facing down render their mob correctly.
+  use) and is accessible to hoppers; jars facing down render their mob correctly. Dispensers place Source and
+  Containment Jars and use the Dominion Wand; pistons break jars.
+- **Decorations and blocks**: archwood, gold, sourcestone and smooth sourcestone **grates** (liquids and items pass
+  through, buckets work through them), the **Source Lamp** (toggled by redstone pulses, brightness set with Light),
+  the **Starbuncle Plush**, the **Starbuncle** and **Resting Drygmy** paintings (Enchanting Apparatus), and the
+  **Ars Stencil** with the 8 Ars banner patterns.
 
 More backports are planned, see [BACKPORT_ROADMAP.md](BACKPORT_ROADMAP.md).
 
@@ -35,8 +40,7 @@ More backports are planned, see [BACKPORT_ROADMAP.md](BACKPORT_ROADMAP.md).
 ## Credits and licenses
 - **Code**: adapted from [Ars Nouveau](https://github.com/baileyholl/Ars-Nouveau) by baileyholl and contributors,
   licensed under the **LGPL v3** (see [LICENSE](LICENSE)). This addon's code is also LGPL v3.
-- **Assets**: the Enchanter's Gauntlet and Enchanter's Fishing Rod textures and models, the Pantomime and Bubble glyph
-  icons and the bubble textures come from Ars Nouveau. Ars Nouveau's textures and models
+- **Assets**: all textures and models of this addon come from Ars Nouveau (1.21.1 versions). Ars Nouveau's textures and models
   are *All Rights Reserved* and remain the property of their authors; they are **not** covered by this repository's
   LGPL license. They are used here because Ars Nouveau encourages addon authors to reuse its assets, and the reuse
   was discussed on the Ars Nouveau Discord. They will be removed on request of the Ars Nouveau team.

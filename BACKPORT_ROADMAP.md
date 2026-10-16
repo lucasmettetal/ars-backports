@@ -37,6 +37,11 @@ Légende difficulté : 🟢 facile · 🟡 moyenne · 🟠 difficile · 🔴 tr�
 | A — Poulet / Panda : produits dans l'inventaire adjacent | 2026-10-16 | `@Redirect` |
 | A — bocal : ouvrir l'inventaire d'une entité-conteneur (sneak) ; inventaire exposé aux entonnoirs ; rendu vers le bas | 2026-10-16 | 3 mixins |
 | B — **Dominion dispenser** + C — **bocaux posés au distributeur / cassés au piston** | 2026-10-16 | `ModDispenserBehaviors` + `JarPistonDestroyMixin` |
+| B — **Grilles** (archwood, or, sourcestone, sourcestone lisse) | 2026-10-16 | `ItemGrate`, API de blocs 1.20.1 |
+| B — **Source Lamp** | 2026-10-16 | logique de l'ampoule en cuivre réécrite ; bascule silencieuse (sons 1.21 absents) |
+| B — **Starbuncle Plush** | 2026-10-16 | |
+| B — **Tableaux** Starbuncle (animé) et Drygmy au repos | 2026-10-16 | registre 1.20.1 + `PaintingDropMixin` |
+| B — **Ars Stencil + 8 motifs de bannière** | 2026-10-16 | la 4.12.7 n'avait aucun motif |
 
 Note : l'effet **Soaked** existe déjà en 4.12.7 (posé par Conjure Water, avec son mixin) — rien à porter
 (le classement initial par noms de fichiers l'avait compté à tort comme nouveau).
@@ -48,13 +53,7 @@ Note : l'effet **Soaked** existe déjà en 4.12.7 (posé par Conjure Water, avec
 |---|---|---|---|
 | Glyphe **Windburst** | non | 🟡 | Wind Charge absente en 1.20.1 → rafale recréée (recul sans dégâts de blocs), sons/particules approchés |
 | **Archwood hanging signs** | non | 🟢 | panneaux suspendus (les panneaux simples existent en 4.12.7, à vérifier) |
-| **Grilles** (archwood, or, sourcestone, sourcestone lisse) | non | 🟢 | `ItemGrate` : laisse passer les items vers le bloc dessous |
-| **Source Lamp** | non | 🟢 | comportement de l'ampoule en cuivre 1.21 à réécrire + `ILightable` |
-| **Ars Stencil** (motif de bannière) | non | 🟢 | |
-| **Starbuncle Plush** | non | 🟢 | décoratif |
-| **Tableaux** Drygmy et Starbuncle | non | 🟢 | décoratifs |
 | **Bateau en archwood** | non | 🟡 | entité dédiée (types de bateau non extensibles en 1.20.1) |
-| **Dominion dispenser** | non | 🟢 | comportement de distributeur pour la baguette de domination (~45 lignes) |
 | **Warpbuncle** (Starbuncles qui empruntent les portails de téléportation) | oui (pathfinding d'Ars) | 🟡 | à analyser |
 | Perk **Unbreakable** (armures d'Ars) | oui (`ItemStack#isDamageableItem`) | 🟡 | + enregistrement du perk et de sa recette |
 | **Repository Catalog** | probablement | 🟠 | bloc + GUI + réseau, lié au stockage d'Ars |
@@ -71,7 +70,6 @@ Note : l'effet **Soaked** existe déjà en 4.12.7 (posé par Conjure Water, avec
 | Listes noires (tags) : Toss, Intangible, rituels Overgrowth/Breeding/Sanctuary, Containment Jar (items) | 🟢–🟡 | Mixin dans chaque glyphe/rituel pour lire le tag |
 | Underfoot cible sous le joueur et ses montures | 🟢 | |
 | Rituels météo/heure dans les autres dimensions | 🟢 | |
-| Pousser bocaux de Source / Containment Jar au piston (casser) et les poser au distributeur | 🟡 | |
 | Source jars reliés aux tourelles | 🟡 | |
 | Rune lancée sur une entité : résout directement sur elle | 🟡 | |
 | Glyphes qui fonctionnent entre dimensions (warp, runes, projectiles) | 🟠 | plusieurs glyphes touchés |

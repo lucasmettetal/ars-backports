@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "M": {"tag": "forge:ingots/gold"},
+    "g": {
+      "item": "minecraft:iron_bars"
+    }
+  },
+  "pattern": [
+    " g ",
+    "gMg",
+    " g "
+  ],
+  "result": {
+    "item": "ars_backports:gold_grate",
+    "count": 1
+  }
+}
