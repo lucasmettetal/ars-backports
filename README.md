@@ -3,7 +3,8 @@
 An independent addon for **Ars Nouveau 4.12.7** on **Minecraft 1.20.1 / Forge 47.4+** that backports selected
 features from the Ars Nouveau 1.21.1 versions, for players and modpacks that stay on 1.20.1.
 
-It depends on Ars Nouveau and does not modify or redistribute it. No mixins: it only uses the existing Ars API.
+It depends on Ars Nouveau and does not redistribute it. It uses the Ars API where possible, and a few targeted
+mixins where 1.21 changed Ars' own blocks and behaviors.
 
 ## Features
 - **Enchanter's Gauntlet** — a spell-casting multi-tool that mines at diamond level (pickaxe, axe, shovel, hoe).
@@ -20,7 +21,10 @@ It depends on Ars Nouveau and does not modify or redistribute it. No mixins: it 
 - **Pantomime glyph** (form) — applies the spell to the block a couple of blocks in front of you, whatever you aim at.
   Amplify/Dampen move the target farther/closer; Sensitive outlines the targeted block.
 - **Bubble glyph** (effect) — traps the creature it touches in a rising bubble; hurting the creature pops the bubble
-  for bonus damage. Extend Time / Amplify increase its duration and damage.
+  for bonus damage. Extend Time / Amplify increase its duration and damage. Creatures inside a bubble count as wet.
+- **Mob Jar improvements** from 1.21: passive jar behaviors pause while the jar is powered; chickens and pandas put
+  their eggs / slime balls into adjacent inventories; a jarred chest minecart or chest boat can be opened (sneak +
+  use) and is accessible to hoppers; jars facing down render their mob correctly.
 
 More backports are planned, see [BACKPORT_ROADMAP.md](BACKPORT_ROADMAP.md).
 

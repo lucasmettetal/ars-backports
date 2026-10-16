@@ -1,0 +1,21 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "fr.lucas.arsbackports.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "refmap": "ars_backports.refmap.json",
+  "mixins": [
+    "BubbleWetEntityMixin",
+    "jar.JarInventoryOutputMixin",
+    "jar.MobJarContainerMixin",
+    "jar.MobJarItemHandlerMixin",
+    "jar.PandaInventoryOutputMixin",
+    "jar.PassiveJarBehaviorMixin"
+  ],
+  "client": [
+    "client.MobJarRendererMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

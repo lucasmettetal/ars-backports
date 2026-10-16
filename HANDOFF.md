@@ -24,7 +24,9 @@ précédentes**. Le mettre à jour à la fin de chaque étape (voir `CLAUDE.md`)
 | **Glyphe Pantomime** (forme) | ✅ codé, compilé, serveur dédié OK (glyphe + config enregistrés), icône officielle | `8036644` | G1–G9 **à faire** |
 | **Glyphe Bubble** (effet) + entité bulle | ✅ codé, compilé, serveur dédié OK, client démarre, textures officielles | `85016a7` | B1–B12 **à faire** |
 
-Tous les éléments ✅ de `BACKPORT_ROADMAP.md` sont codés. Les éléments ⚠️ demandent l'accord de l'utilisateur.
+| **Mixins** + améliorations des Mob Jars d'Ars (section A) | ✅ codé, compilé, mixins appliqués serveur + client | voir `git log` (« mob jar mixins ») | J12–J17 **à faire** |
+
+Section A de la roadmap terminée (2026-10-16). Suite : `BACKPORT_ROADMAP.md` « Ordre de travail » et §6 ci-dessous.
 
 Dernier résultat : **2026-10-16 — `gradlew.bat build` → BUILD SUCCESSFUL, 0 avertissement javac** ;
 `gradlew.bat runServer` → `Done (18.687s)!`, glyphes `glyph_pantomime` et `glyph_bubble` + entité `ars_backports:bubble`
@@ -38,7 +40,9 @@ enregistrés, configs `config/ars_backports/glyph_*.toml` créées, aucune erreu
   et tout autre ressource nécessaire. Les créateurs sont ouverts aux addons pour leurs mods. » Règles d'usage : `CLAUDE.md`
   (« Principes »). Aucun Mixin n'existe encore dans le code (au 2026-10-16) ; il faudra d'abord ajouter la configuration
   Mixin au build (plugin MixinGradle + `ars_backports.mixins.json`). Pas de nouvelle dépendance de mod sans accord.
-- **Publication** : l'utilisateur fera valider par l'équipe d'Ars avant de poster en ligne ; ne rien publier sans lui.
+- **Publication du mod** (CurseForge/Modrinth/release) : seulement à la fin ; l'utilisateur fera valider par l'équipe
+  d'Ars avant ; ne rien publier sans lui. **Push GitHub** : à chaque étape, sans demander.
+- **Tests** : l'utilisateur fera un gros playtest plus tard ; avancer au maximum sans attendre (2026-10-16).
 - **Roadmap** : la mettre à jour à chaque fin de session (demande du 2026-10-16).
 - **Exclus par l'utilisateur** : ce qui est trop compliqué, notamment la nouvelle dimension (Planarium). Classement
   complet faisable / adapté / exclu dans `BACKPORT_ROADMAP.md`.
@@ -60,9 +64,11 @@ enregistrés, configs `config/ars_backports/glyph_*.toml` créées, aucune erreu
 ## 3. Contenu du dépôt
 | Fichier | Rôle |
 |---|---|
-| `settings.gradle` | dépôts de plugins, plugin foojay, `rootProject.name = 'ars_backports'` |
-| `build.gradle` | ForgeGradle `[6.0,6.2)` (résolu 6.0.54), toolchain Java 17, mappings officiels, runs client/server (+ propriétés `mixin.env.remapRefMap`/`refMapRemappingFile`, nécessaires pour que les mixins de Curios/Ars fonctionnent en dev), dépôts BlameJared / Maven Central / Curios / GeckoLib filtrés par groupe, Ars en `implementation`, Curios + GeckoLib + MixinExtras en `runtimeOnly` (dépendances d'Ars, dev uniquement), `-Xlint:deprecation` |
-| `gradle.properties` | MC 1.20.1, Forge 47.4.10 (`[47.4,)`), Ars `4.12.7.264` (`[4.12.7,)`), dev : Curios `5.14.1+1.20.1`, GeckoLib `4.8.4`, MixinExtras `0.4.1` ; modid `ars_backports`, `LGPL-3.0-only`, version 0.1.0 |
+| `settings.gradle` | dépôts de plugins (Gradle Plugin Portal, Sponge, MinecraftForge), plugin foojay, `rootProject.name = 'ars_backports'` |
+| `src/main/resources/ars_backports.mixins.json`, `.../mixin/**` | configuration et classes Mixin (§4.6) |
+| `.../mobjar/JarEntityItemHandler.java` | inventaire exposé par un bocal (§4.6) |
+| `build.gradle` | ForgeGradle `[6.0,6.2)` (résolu 6.0.54) + MixinGradle 0.7.38 (§4.6), toolchain Java 17, mappings officiels, runs client/server (+ propriétés `mixin.env.remapRefMap`/`refMapRemappingFile`, nécessaires pour que les mixins de Curios/Ars fonctionnent en dev), dépôts BlameJared / Maven Central / Curios / GeckoLib filtrés par groupe, Ars en `implementation`, Curios + GeckoLib + MixinExtras en `runtimeOnly` (dépendances d'Ars, dev uniquement), processeur Mixin, `MixinConfigs` dans le manifeste, `-Xlint:deprecation` |
+| `gradle.properties` | MC 1.20.1, Forge 47.4.10 (`[47.4,)`), Ars `4.12.7.264` (`[4.12.7,)`), dev : Curios `5.14.1+1.20.1`, GeckoLib `4.8.4`, MixinExtras `0.4.1` ; processeur Mixin `0.8.5` ; modid `ars_backports`, `LGPL-3.0-only`, version 0.1.0 |
 | `src/main/java/fr/lucas/arsbackports/ArsBackports.java` | `@Mod` ; enregistre `ModItems.ITEMS` ; `FMLCommonSetupEvent` → `enqueueWork(JarBehaviors::register)` ; ajoute Gauntlet et canne à l'onglet Ars (`CreativeTabRegistry.BLOCKS`, id `ars_nouveau:general`) |
 | `.../registry/ModItems.java` | `DeferredRegister<Item>` : `enchanters_gauntlet`, `enchanters_fishing_rod` |
 | `.../item/TouchCaster.java` | interface commune (étend `ICasterTool`) des lanceurs « Touch implicite » : refus des sorts avec forme, préfixe `MethodTouch` sur une **copie** du sort, message d'erreur (`invalidSpellKey()`), helpers de tooltip (`appendSpellTooltip`, `spellTooltipImage`) |
@@ -210,12 +216,35 @@ et vérifiées par `javap` dans les jars résolus (§5.2). Les **écarts** avec 
     comme `force` saute aussi `canAddPassenger`, la boucle s'arrête à la première capture (1 seul passager) ;
   - éclatement silencieux à la mort du passager (`EntityPreRemovalEvent` d'Ars) → surcharge de `removePassenger`
     (`Entity#setRemoved` fixe la raison du retrait puis appelle `stopRiding`, vérifié en bytecode) ;
-  - passager « mouillé » (`EntityMixin` : `isInWaterRainOrBubble`) → **non repris** (Mixin) ; l'effet Soaked n'est pas porté ;
+  - passager « mouillé » (`EntityMixin` 1.21) → **repris le 2026-10-16** par `mixin/BubbleWetEntityMixin` (§4.6) ;
+    l'effet Soaked existe déjà en 4.12.7 (`ModPotions.SOAKED_EFFECT`, posé par Conjure Water, avec son propre mixin) ;
   - position du passager : `getPassengerRidingPosition` (1.21) → `positionRider` (1.20.1) : item 0.25 au-dessus, sinon à l'origine ;
   - rendu : le shader `worldEntityIcon` d'Ars 1.21 n'existe pas en 4.12.7 → `RenderType.entityTranslucent` (vanilla),
     même quad, même échelle, mêmes images ;
   - `ParticleUtil.inRange` (classe client d'Ars, importe `ClientLevel`) n'est pas utilisé côté commun → tirage aléatoire équivalent.
 - Recette : tags `c:feathers` / `c:` → `forge:feathers` ; `ars_nouveau:water_essence` existe en 4.12.7.
+
+### 4.6 Mixins (infrastructure) et améliorations des Mob Jars d'Ars (section A de la roadmap, 2026-10-16)
+- **Infrastructure** : plugin `org.spongepowered.mixin` 0.7.38 (dépôt `repo.spongepowered.org`, déclaré dans
+  `settings.gradle` et `build.gradle`), bloc `mixin { add sourceSets.main, "ars_backports.refmap.json"; config
+  "ars_backports.mixins.json" }`, `annotationProcessor org.spongepowered:mixin:0.8.5:processor` (version embarquée par
+  Forge 1.20.1), `MixinConfigs` dans le manifeste du jar. Config : `src/main/resources/ars_backports.mixins.json`
+  (`compatibilityLevel` JAVA_17 comme Ars ; `defaultRequire` 1 = une injection introuvable fait planter au chargement,
+  donc toute erreur se voit au démarrage). Le refmap généré mappe vers les noms SRG (production) ; en dev l'avertissement
+  « Reference map … could not be read » est normal. Pas de MixinExtras (non garanti à l'exécution) : `@Inject`/`@Redirect` simples.
+  Vérification : dans `run*/logs/debug.log`, chaque mixin doit apparaître en « Mixing <mixin> from ars_backports.mixins.json into <cible> ».
+- **Mixins existants** (tous vérifiés appliqués au démarrage serveur/client, sans erreur d'injection) :
+  | Mixin | Cible | Reproduit (1.21.1) |
+  |---|---|---|
+  | `BubbleWetEntityMixin` | `Entity#isInWaterOrRain` (RETURN), `#setRemainingFireTicks` (HEAD) | entité vivante sur une bulle = mouillée, ne prend pas feu (`EntityMixin`) ; coexiste avec le mixin Soaked d'Ars 4.12.7 |
+  | `jar.PassiveJarBehaviorMixin` | `tick` de `ChickenBehavior`, `FrogBehavior`, `PandaBehavior`, `PiglinBehavior`, `PufferfishBehavior`, `SheepBehavior`, `VillagerBehavior` (HEAD) | « disable mob jar behaviors with redstone power » (commit `a97a3389`) : pause tant que le bocal est alimenté ; ces ticks ne font rien côté client en 4.12.7 (vérifié), annuler tout le tick est équivalent |
+  | `jar.JarInventoryOutputMixin` | `ChickenBehavior#tick`, `@Redirect` de `spawnAtLocation` | œufs insérés dans les inventaires adjacents (`insertOrCreateItem`, commit #1644) |
+  | `jar.PandaInventoryOutputMixin` | `PandaBehavior#afterSneeze`, `@Redirect` de `Level#addFreshEntity` | boule de slime insérée dans les inventaires adjacents (#1644) |
+  | `jar.MobJarContainerMixin` | `MobJar#use`, avant `dispatchBehavior` | sneak + clic droit sur un bocal contenant une entité-conteneur (wagonnet/bateau coffre) ouvre son inventaire (#1644) |
+  | `jar.MobJarItemHandlerMixin` | `MobJarTile` (ajout de `getCapability`) | le bocal expose l'inventaire de l'entité aux entonnoirs/tuyaux (#1644 : capability NeoForge + `SavingItemHandler`) ; ici `mobjar/JarEntityItemHandler`, qui relit l'entité à chaque appel (pas de LazyOptional périmé) et marque le bocal modifié |
+  | `client.MobJarRendererMixin` | `MobJarRenderer#render`, avant `Direction#getRotation` | correctif de rendu des bocaux orientés vers le bas (#1644) |
+- Écarts : le Sniffer garde son compteur dans le bocal (le 1.21 utilise un Access Transformer sur
+  `Sniffer.DATA_DROP_SEED_AT_TICK` ; notre version survit au rechargement, laissée telle quelle).
 
 ## 5. Méthodes réutilisables
 ### 5.1 Conversion des modèles GeckoLib → JSON vanilla
@@ -246,11 +275,12 @@ configs « not correct. Correcting », `Failed to load properties from file: ser
 `Reflective setAccessible` (bruit de debug).
 
 ## 6. Prochaines actions exactes
-1. **Tests en jeu par l'utilisateur** (`TESTS.md`), en priorité les rendus jamais vus (canne P1/P5, glyphes G1, bulle
-   B2/B4, contour G6) ; corriger tout écart constaté.
-2. **Demander à l'utilisateur** quels éléments ⚠️ de `BACKPORT_ROADMAP.md` il veut (Windburst adapté, Source Lamp,
-   grilles, hanging sign, Ars Stencil, bateau, plush, Decor Blossom) — assets officiels désormais autorisés.
-3. Avant une release publique : choisir une version (`mod_version`, actuellement 0.1.0), relire `README.md`.
+Suivre « Ordre de travail » de `BACKPORT_ROADMAP.md` sans attendre de tests (playtest global plus tard) :
+1. **Section B, éléments 🟢** : Dominion dispenser, Archwood hanging signs, grilles (`ItemGrate`), Source Lamp,
+   Ars Stencil, Starbuncle Plush, tableaux Drygmy/Starbuncle. Pour chacun : lire le code `main`, porter, assets officiels.
+2. **Section C, éléments 🟢** (Mixins/événements).
+3. Puis Windburst, bateau en archwood, autres 🟡 ; correctifs (D).
+4. Avant la publication (seulement avec l'utilisateur) : choisir une version (`mod_version`, actuellement 0.1.0), relire `README.md`.
 
 ## 7. Environnement
 - Java **Temurin 17.0.20.1+1**, Gradle 8.8 (wrapper), ForgeGradle 6.0.54, Forge 1.20.1-47.4.10, mappings `official`,

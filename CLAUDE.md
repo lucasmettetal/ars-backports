@@ -48,8 +48,12 @@ Ne jamais commencer un élément ⚠️ ou ❌ de la roadmap sans accord explici
   (checklist en jeu), `BACKPORT_ROADMAP.md`, `README.md` (liste des fonctionnalités), puis commit + push sur `main`
 - ne jamais affirmer dans la doc une chose non vérifiée (ex. tests en jeu non faits = « à faire »)
 - **à la fin de chaque session : mettre à jour `BACKPORT_ROADMAP.md`** (demande explicite du 2026-10-16), en plus de `HANDOFF.md`
-- **publication en ligne** (CurseForge, Modrinth, release GitHub…) : jamais sans confirmation de l'utilisateur, qui fera
-  valider par l'équipe d'Ars avant de poster
+- **GitHub** : commit + push sur `main` à chaque étape stable, sans demander (c'est le moyen de synchroniser les PC)
+- **publication du mod** (CurseForge, Modrinth, release GitHub…) : seulement à la fin, jamais sans confirmation de
+  l'utilisateur, qui fera valider par l'équipe d'Ars avant de poster
+- **tests en jeu** : l'utilisateur fera un gros playtest quand beaucoup de contenu sera ajouté (décision du 2026-10-16) ;
+  ne pas attendre de tests pour avancer, ne pas les redemander ; continuer à remplir `TESTS.md` et à faire build +
+  démarrage serveur dédié après chaque fonctionnalité ; avancer dans l'ordre de `BACKPORT_ROADMAP.md` (« Ordre de travail »)
 
 ## Conventions de code
 - casters à Touch implicite (Gauntlet, canne) : implémenter `item/TouchCaster` (refus des formes, préfixe Touch sur une copie, tooltip)

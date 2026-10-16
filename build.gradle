@@ -2,6 +2,8 @@ plugins {
     id 'eclipse'
     id 'idea'
     id 'net.minecraftforge.gradle' version '[6.0,6.2)'
+    // Mixin annotation processing + refmap for our mixins (allowed since 2026-10-16, see CLAUDE.md).
+    id 'org.spongepowered.mixin' version '0.7.38'
 }
 
 version = "${minecraft_version}-${mod_version}"
@@ -48,7 +50,20 @@ minecraft {
     }
 }
 
+mixin {
+    add sourceSets.main, "${mod_id}.refmap.json"
+    config "${mod_id}.mixins.json"
+}
+
 repositories {
+    // Mixin annotation processor.
+    maven {
+        name = 'Sponge'
+        url = 'https://repo.spongepowered.org/repository/maven-public/'
+        content {
+            includeGroup 'org.spongepowered'
+        }
+    }
     // Ars Nouveau is published here by its CI.
     maven {
         name = 'BlameJared'
@@ -88,6 +103,9 @@ dependencies {
     runtimeOnly fg.deobf("software.bernie.geckolib:geckolib-forge-${minecraft_version}:${geckolib_version}")
     // Ars normally jar-in-jars MixinExtras, but its Maven jar does not contain it.
     runtimeOnly "io.github.llamalad7:mixinextras-forge:${mixinextras_version}"
+
+    // Generates the refmap of our mixins (Mixin 0.8.5 is the version shipped by Forge 1.20.1).
+    annotationProcessor "org.spongepowered:mixin:${mixin_version}:processor"
 }
 
 tasks.named('processResources', ProcessResources).configure {
@@ -114,7 +132,8 @@ tasks.named('jar', Jar).configure {
                 'Implementation-Title'    : project.name,
                 'Implementation-Version'  : project.jar.archiveVersion,
                 'Implementation-Vendor'   : mod_authors,
-                'Implementation-Timestamp': new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+                'Implementation-Timestamp': new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
+                'MixinConfigs'            : "${mod_id}.mixins.json"
         ])
     }
     finalizedBy 'reobfJar'

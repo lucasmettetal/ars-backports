@@ -145,3 +145,15 @@ Mise en place : `/give @p ars_backports:glyph_bubble`, livre de sorts. Sorts con
 | B10 | Mort du passager | tuer le mob capturé (ex. dans le vide / lave sous la bulle) | la bulle éclate | [ ] |
 | B11 | Blacklist | viser un boss (Wither) ou un projectile | pas de capture | [ ] |
 | B12 | Serveur dédié + multijoueur | B2–B4 sur `runServer`, deux joueurs | bulle visible par les deux, aucun crash | [ ] |
+
+# Checklist de tests — améliorations des Mob Jars d'Ars (Mixins)
+
+| # | Test | Procédure | Attendu | État |
+|---|---|---|---|---|
+| J12 | Pause redstone | poulet en bocal + levier ; alimenter | plus d'œufs tant que c'est alimenté (idem grenouille, panda, piglin, poisson-globe, mouton, villageois) | [ ] |
+| J13 | Œufs en coffre | poulet en bocal, coffre collé au bocal | les œufs vont dans le coffre (sinon au-dessus du bocal) | [ ] |
+| J14 | Panda | bébé panda en bocal + coffre | boules de slime (rares) dans le coffre | [ ] |
+| J15 | Entité-conteneur | wagonnet coffre en bocal ; sneak + clic droit | son inventaire s'ouvre ; les objets sont conservés après rechargement | [ ] |
+| J16 | Entonnoir | entonnoir sous / au-dessus d'un bocal avec wagonnet coffre (ou âne avec coffre) | l'entonnoir vide / remplit l'inventaire de l'entité | [ ] |
+| J17 | Bocal vers le bas | poser un bocal orienté vers le bas avec un mob | le mob est rendu à l'intérieur du bocal | [ ] |
+| B13 | Bulle mouillée | mob en feu capturé par une bulle | le feu s'éteint, il ne peut pas reprendre feu tant qu'il est dans la bulle | [ ] |

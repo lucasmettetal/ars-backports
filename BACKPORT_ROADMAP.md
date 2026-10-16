@@ -16,6 +16,13 @@ dernier le 2025-06-23). La liste n'est pas exhaustive pour les petits correctifs
 
 Légende difficulté : 🟢 facile · 🟡 moyenne · 🟠 difficile · 🔴 très difficile.
 
+## Ordre de travail (convenu le 2026-10-16)
+1. ~~Mise en place des Mixins, puis section A~~ — fait le 2026-10-16.
+2. **Les 🟢 de B et C** (prochain).
+3. Windburst, bateau en archwood, puis les 🟡 restants.
+4. Correctifs (D) choisis.
+5. Les 🔴 seulement si l'utilisateur le demande. Playtest global par l'utilisateur quand beaucoup de contenu est prêt.
+
 ## ✅ Fait (codé, compilé, serveur dédié OK — tests en jeu dans `TESTS.md`)
 | Fonctionnalité | Date | Remarque |
 |---|---|---|
@@ -23,15 +30,17 @@ Légende difficulté : 🟢 facile · 🟡 moyenne · 🟠 difficile · 🔴 tr�
 | Mob Jar : Sniffer, Chat, Golem de neige | 2026-10-13 | |
 | Enchanter's Fishing Rod | 2026-10-13 | Lure / Luck of the Sea fonctionnels (pas dans l'officiel) |
 | Glyphe Pantomime (forme) | 2026-10-16 | effets visuels = burst de Touch 4.12.7 |
-| Glyphe Bubble + entité bulle | 2026-10-16 | sans l'effet « mouillé » (était Mixin, voir A) |
+| Glyphe Bubble + entité bulle | 2026-10-16 | passager « mouillé » ajouté ensuite par Mixin (A) |
+| **Infrastructure Mixin** | 2026-10-16 | MixinGradle, refmap, `ars_backports.mixins.json` (`HANDOFF.md` §4.6) |
+| A — bulle : passager « mouillé » | 2026-10-16 | `BubbleWetEntityMixin` |
+| A — Mob Jars d'Ars en pause quand alimentés (7 comportements) | 2026-10-16 | `PassiveJarBehaviorMixin` |
+| A — Poulet / Panda : produits dans l'inventaire adjacent | 2026-10-16 | `@Redirect` |
+| A — bocal : ouvrir l'inventaire d'une entité-conteneur (sneak) ; inventaire exposé aux entonnoirs ; rendu vers le bas | 2026-10-16 | 3 mixins |
 
-## A. Compléments de ce qui est fait (rendus possibles par les Mixins)
-| Élément | Mixin | Difficulté | Notes |
-|---|---|---|---|
-| Bulle : passager « mouillé » (feu éteint, comme sous la pluie) | oui (`Entity#isInWaterRainOrBubble`) | 🟢 | reproduit `EntityMixin` 1.21 |
-| Effet **Soaked** (posé par Conjure Water en 1.21) | oui (Conjure Water d'Ars + même mixin `Entity`) | 🟡 | nouvel effet de potion + modification d'un glyphe d'Ars |
-| Comportements Mob Jar d'Ars **désactivables par redstone** (1.21) | oui (comportements d'Ars) | 🟡 | les nôtres le respectent déjà (Sniffer) |
-| Bocaux : changements de Poulet / Panda / bocal du commit « more jar behaviors » | oui | 🟡 | à analyser (insertion dans les inventaires adjacents ?) |
+Note : l'effet **Soaked** existe déjà en 4.12.7 (posé par Conjure Water, avec son mixin) — rien à porter
+(le classement initial par noms de fichiers l'avait compté à tort comme nouveau).
+
+## A. Compléments de ce qui est fait — ✅ terminé le 2026-10-16 (voir ci-dessus)
 
 ## B. Nouveau contenu 1.21
 | Élément | Mixin | Difficulté | Notes |
