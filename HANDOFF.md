@@ -67,6 +67,7 @@ enregistrés, configs `config/ars_backports/glyph_*.toml` créées, aucune erreu
 | `settings.gradle` | dépôts de plugins (Gradle Plugin Portal, Sponge, MinecraftForge), plugin foojay, `rootProject.name = 'ars_backports'` |
 | `src/main/resources/ars_backports.mixins.json`, `.../mixin/**` | configuration et classes Mixin (§4.6) |
 | `.../mobjar/JarEntityItemHandler.java` | inventaire exposé par un bocal (§4.6) |
+| `.../registry/ModDispenserBehaviors.java` | comportements de distributeur 1.21 : bocaux, baguette de domination (§4.6) |
 | `build.gradle` | ForgeGradle `[6.0,6.2)` (résolu 6.0.54) + MixinGradle 0.7.38 (§4.6), toolchain Java 17, mappings officiels, runs client/server (+ propriétés `mixin.env.remapRefMap`/`refMapRemappingFile`, nécessaires pour que les mixins de Curios/Ars fonctionnent en dev), dépôts BlameJared / Maven Central / Curios / GeckoLib filtrés par groupe, Ars en `implementation`, Curios + GeckoLib + MixinExtras en `runtimeOnly` (dépendances d'Ars, dev uniquement), processeur Mixin, `MixinConfigs` dans le manifeste, `-Xlint:deprecation` |
 | `gradle.properties` | MC 1.20.1, Forge 47.4.10 (`[47.4,)`), Ars `4.12.7.264` (`[4.12.7,)`), dev : Curios `5.14.1+1.20.1`, GeckoLib `4.8.4`, MixinExtras `0.4.1` ; processeur Mixin `0.8.5` ; modid `ars_backports`, `LGPL-3.0-only`, version 0.1.0 |
 | `src/main/java/fr/lucas/arsbackports/ArsBackports.java` | `@Mod` ; enregistre `ModItems.ITEMS` ; `FMLCommonSetupEvent` → `enqueueWork(JarBehaviors::register)` ; ajoute Gauntlet et canne à l'onglet Ars (`CreativeTabRegistry.BLOCKS`, id `ars_nouveau:general`) |
@@ -243,6 +244,14 @@ et vérifiées par `javap` dans les jars résolus (§5.2). Les **écarts** avec 
   | `jar.MobJarContainerMixin` | `MobJar#use`, avant `dispatchBehavior` | sneak + clic droit sur un bocal contenant une entité-conteneur (wagonnet/bateau coffre) ouvre son inventaire (#1644) |
   | `jar.MobJarItemHandlerMixin` | `MobJarTile` (ajout de `getCapability`) | le bocal expose l'inventaire de l'entité aux entonnoirs/tuyaux (#1644 : capability NeoForge + `SavingItemHandler`) ; ici `mobjar/JarEntityItemHandler`, qui relit l'entité à chaque appel (pas de LazyOptional périmé) et marque le bocal modifié |
   | `client.MobJarRendererMixin` | `MobJarRenderer#render`, avant `Direction#getRotation` | correctif de rendu des bocaux orientés vers le bas (#1644) |
+- `jar.JarPistonDestroyMixin` (`SourceJar`, `MobJar` : ajout de `IForgeBlock#getPistonPushReaction` → `DESTROY`) :
+  un piston casse les bocaux de Source (et Creative, sous-classe) et les Containment Jars (1.21 #1661 ; aucune classe de
+  leur hiérarchie ne surcharge ce hook en 4.12.7, vérifié par `javap`).
+- **Distributeurs** (`registry/ModDispenserBehaviors`, sans Mixin, enregistrés au `FMLCommonSetupEvent` via
+  `enqueueWork`) : copie du `DispenserBehaviorRegistry` 1.21 — pose des Source Jars / Creative Source Jars (debout) et des
+  Containment Jars (tournés à l'opposé du distributeur) avec `UnbiasedDirectionalPlaceContext`, et utilisation de la
+  baguette de domination (#1783) sur l'entité vivante devant le distributeur, sinon sur le bloc (via `ANFakePlayer`).
+  Seul changement : accesseurs 1.20.1 de `BlockSource` (`getLevel/getPos/getBlockState`).
 - Écarts : le Sniffer garde son compteur dans le bocal (le 1.21 utilise un Access Transformer sur
   `Sniffer.DATA_DROP_SEED_AT_TICK` ; notre version survit au rechargement, laissée telle quelle).
 

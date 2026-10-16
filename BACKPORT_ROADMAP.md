@@ -36,6 +36,7 @@ Légende difficulté : 🟢 facile · 🟡 moyenne · 🟠 difficile · 🔴 tr�
 | A — Mob Jars d'Ars en pause quand alimentés (7 comportements) | 2026-10-16 | `PassiveJarBehaviorMixin` |
 | A — Poulet / Panda : produits dans l'inventaire adjacent | 2026-10-16 | `@Redirect` |
 | A — bocal : ouvrir l'inventaire d'une entité-conteneur (sneak) ; inventaire exposé aux entonnoirs ; rendu vers le bas | 2026-10-16 | 3 mixins |
+| B — **Dominion dispenser** + C — **bocaux posés au distributeur / cassés au piston** | 2026-10-16 | `ModDispenserBehaviors` + `JarPistonDestroyMixin` |
 
 Note : l'effet **Soaked** existe déjà en 4.12.7 (posé par Conjure Water, avec son mixin) — rien à porter
 (le classement initial par noms de fichiers l'avait compté à tort comme nouveau).

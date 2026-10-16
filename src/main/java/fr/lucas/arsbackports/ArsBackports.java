@@ -4,6 +4,7 @@ import com.hollingsworth.arsnouveau.setup.registry.CreativeTabRegistry;
 import com.mojang.logging.LogUtils;
 import fr.lucas.arsbackports.glyph.Glyphs;
 import fr.lucas.arsbackports.mobjar.JarBehaviors;
+import fr.lucas.arsbackports.registry.ModDispenserBehaviors;
 import fr.lucas.arsbackports.registry.ModEntities;
 import fr.lucas.arsbackports.registry.ModItems;
 import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
@@ -28,7 +29,10 @@ public class ArsBackports {
     }
 
     private void commonSetup(FMLCommonSetupEvent event) {
-        event.enqueueWork(JarBehaviors::register);
+        event.enqueueWork(() -> {
+            JarBehaviors.register();
+            ModDispenserBehaviors.register();
+        });
     }
 
     // Our items go into Ars Nouveau's main tab ("ars_nouveau:general") next to its own caster tools.

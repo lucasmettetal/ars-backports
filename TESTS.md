@@ -157,3 +157,12 @@ Mise en place : `/give @p ars_backports:glyph_bubble`, livre de sorts. Sorts con
 | J16 | Entonnoir | entonnoir sous / au-dessus d'un bocal avec wagonnet coffre (ou âne avec coffre) | l'entonnoir vide / remplit l'inventaire de l'entité | [ ] |
 | J17 | Bocal vers le bas | poser un bocal orienté vers le bas avec un mob | le mob est rendu à l'intérieur du bocal | [ ] |
 | B13 | Bulle mouillée | mob en feu capturé par une bulle | le feu s'éteint, il ne peut pas reprendre feu tant qu'il est dans la bulle | [ ] |
+
+# Checklist de tests — distributeurs et pistons (1.21)
+
+| # | Test | Procédure | Attendu | État |
+|---|---|---|---|---|
+| D1 | Source Jar au distributeur | distributeur + Source Jar (rempli) + impulsion | le bocal est posé debout devant, avec sa Source | [ ] |
+| D2 | Containment Jar au distributeur | idem avec un bocal contenant un mob | posé tourné à l'opposé du distributeur, mob conservé | [ ] |
+| D3 | Baguette de domination | distributeur + baguette liée, entité ou bloc devant | même effet qu'un clic droit du joueur avec la baguette | [ ] |
+| D4 | Piston | piston qui pousse un Source Jar / Containment Jar | le bocal se casse et tombe en item (contenu conservé selon la loot table d'Ars) | [ ] |

@@ -7,6 +7,7 @@
   "mixins": [
     "BubbleWetEntityMixin",
     "jar.JarInventoryOutputMixin",
+    "jar.JarPistonDestroyMixin",
     "jar.MobJarContainerMixin",
     "jar.MobJarItemHandlerMixin",
     "jar.PandaInventoryOutputMixin",
