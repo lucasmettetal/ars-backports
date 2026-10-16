@@ -1,0 +1,17 @@
+{
+  "replace": false,
+  "values": [
+    "#forge:bosses",
+    "ars_backports:bubble",
+    "ars_nouveau:follow_proj",
+    "ars_nouveau:flying_item",
+    "minecraft:wither_skull",
+    "minecraft:small_fireball",
+    "minecraft:dragon_fireball",
+    {"id": "create:contraption", "required": false},
+    {"id": "create:carriage_contraption", "required": false},
+    {"id": "create:stationary_contraption", "required": false},
+    {"id": "create:seat", "required": false},
+    {"id": "create:gantry_contraption", "required": false}
+  ]
+}

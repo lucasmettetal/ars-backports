@@ -22,13 +22,15 @@ précédentes**. Le mettre à jour à la fin de chaque étape (voir `CLAUDE.md`)
 | **Mob Jar** : Sniffer, Chat, Golem de neige | ✅ codé, compilé, serveur dédié OK | `5f53d80` | J1–J11 **à faire** |
 | **Enchanter's Fishing Rod** | ✅ codé, compilé, serveur dédié OK, assets officiels | `2ee04f1` | P1–P12 **à faire** |
 | **Glyphe Pantomime** (forme) | ✅ codé, compilé, serveur dédié OK (glyphe + config enregistrés), icône officielle | `8036644` | G1–G9 **à faire** |
-| Glyphe Bubble | ⏳ prochain | — | — |
+| **Glyphe Bubble** (effet) + entité bulle | ✅ codé, compilé, serveur dédié OK, client démarre, textures officielles | voir `git log` (« bubble ») | B1–B12 **à faire** |
+
+Tous les éléments ✅ de `BACKPORT_ROADMAP.md` sont codés. Les éléments ⚠️ demandent l'accord de l'utilisateur.
 
 Dernier résultat : **2026-10-16 — `gradlew.bat build` → BUILD SUCCESSFUL, 0 avertissement javac** ;
-`gradlew.bat runServer` → `Done (9.438s)!`, glyphe `ars_backports:glyph_pantomime` enregistré, config
-`config/ars_backports/glyph_pantomime.toml` créée, aucune erreur de recette, aucune erreur `ars_backports`.
-`runClient` : dernier lancement avant l'ajout de la canne et du Pantomime (menu principal, aucune erreur de modèle) ;
-rendu de la canne et du glyphe **pas encore vus en jeu**.
+`gradlew.bat runServer` → `Done (18.687s)!`, glyphes `glyph_pantomime` et `glyph_bubble` + entité `ars_backports:bubble`
+enregistrés, configs `config/ars_backports/glyph_*.toml` créées, aucune erreur de recette/tag, aucune erreur `ars_backports` ;
+`gradlew.bat runClient` → menu principal, aucune erreur de modèle, texture ou renderer `ars_backports`.
+**Rendu en jeu non vu** pour : canne (rangée/lancée), icônes des glyphes, bulle (quad + éclatement), contour Sensitive.
 
 ## 2. Décisions et contexte donnés par l'utilisateur
 - **Cibles figées** : Minecraft 1.20.1, Forge 47.4.10, Java 17, Ars Nouveau 4.12.7 (`4.12.7.264`). Ne pas changer sans accord.
@@ -67,6 +69,13 @@ rendu de la canne et du glyphe **pas encore vus en jeu**.
 | `.../glyph/Glyphs.java` | enregistrement des glyphes (`GlyphRegistry.registerSpell`), appelé **dans le constructeur du mod** (§4.4) |
 | `.../glyph/MethodPantomime.java` | forme Pantomime (§4.4) |
 | `.../client/PantomimeOutlineRenderer.java` | **client uniquement** : contour du bloc visé avec Pantomime + Sensitive (§4.4) |
+| `.../glyph/EffectBubble.java` | effet Bubble (§4.5) |
+| `.../entity/BubbleEntity.java` | entité bulle + ses gestionnaires d'événements Forge (§4.5) |
+| `.../registry/ModEntities.java` | `DeferredRegister<EntityType<?>>` : `ars_backports:bubble` (0.5 × 0.5, portée de suivi 10) |
+| `.../client/BubbleRenderer.java` | **client uniquement** : quad face caméra + 5 images d'éclatement ; enregistré dans `ClientSetup.onRegisterRenderers` |
+| `.../textures/entity/bubble.png`, `bubble_pop1..5.png`, `.../textures/item/glyph_bubble.png`, `.../models/item/glyph_bubble.json` | textures officielles (bulle, éclatement, icône) |
+| `src/main/resources/data/ars_backports/recipes/glyph_bubble.json` | 3 × `forge:feathers`, seau d'eau, `#minecraft:boats`, `ars_nouveau:water_essence` (traduction des tags `c:` officiels) |
+| `src/main/resources/data/ars_backports/tags/entity_types/bubble_blacklist.json` | entités jamais capturées (copie de l'officiel : `#forge:bosses`, la bulle, projectiles d'Ars et vanilla, Create optionnel) |
 | `.../models/item/glyph_pantomime.json`, `.../textures/item/glyph_pantomime.png` | icône du glyphe (texture officielle `textures/item/pantomime.png` de la branche `main`) |
 | `src/main/resources/data/ars_backports/recipes/glyph_pantomime.json` | recette de glyphe (Scribes Table) : 8 × `forge:glass`, 27 exp |
 | `src/main/resources/assets/ars_backports/lang/en_us.json`, `fr_fr.json` | noms + messages d'erreur (`ars_backports.gauntlet.invalid`, `ars_backports.fishing_rod.invalid`) ; textes anglais officiels 1.21, français calqué sur les traductions d'Ars (« … d'enchanteur ») |
@@ -177,6 +186,32 @@ et vérifiées par `javap` dans les jars résolus (§5.2). Les **écarts** avec 
   `endBatch(RenderType.lines())` (le 1.21 utilise l'`outlineBufferSource`).
 - Les casters à Touch implicite (Gauntlet, canne) refusent ce glyphe : c'est une forme.
 
+### 4.5 Glyphe Bubble (effet) et entité bulle
+- **Effet** (copie du 1.21.1) : sur un bloc → bulle au point d'impact ; sur une entité → bulle + capture immédiate.
+  Durée `100 + durée × extend_time` ticks, dégâts à l'éclatement `damage + amp × amp_value + bonus de dégâts`
+  (config : `damage` 5, `amp_value` 2, `extend_time` 3 — défauts officiels). Coût 20, école Eau, augments Extend Time,
+  Amplify, Dampen, Duration Down. Config créée avec `addExtendTimeTicksConfig` (même clé `extend_time` que
+  l'`addExtendTimeConfig` officiel, déprécié « for removal » en 4.12.7 ; la valeur est utilisée en ticks).
+- **Entité** (`Projectile`, copie du 1.21.1) : monte de 0.1 bloc/tick sans collision, capture la première entité
+  touchée (sauf tag `ars_backports:bubble_blacklist`, joueurs endormis, entités déjà sorties de cette bulle), éclate à la
+  fin de sa durée, quand on la frappe vide (ou avec un item), ou quand son passager subit des dégâts (bonus de dégâts
+  si la bulle a plus d'1 tick et que le passager n'est pas son lanceur ; + attribut `PerkAttributes.SPELL_DAMAGE_BONUS`
+  du lanceur). Frapper une bulle qui porte une créature frappe la créature. Disparaît 5 ticks après l'éclatement.
+  Événements Forge (`@Mod.EventBusSubscriber`) : `AttackEntityEvent` ; `LivingDamageEvent` (équivalent Forge 1.20.1 du
+  `LivingDamageEvent.Pre` NeoForge : dégâts après réductions). Sauvegarde : `maxAge`, `damage`, `age`.
+- **Écarts** (le 1.21.1 utilise des Mixins / événements internes d'Ars) :
+  - capture qui ignore le délai de remontée (`EntityAccessor` Mixin sur `boardingCooldown`) → `startRiding(this, true)`
+    qui saute seulement `Entity#canRide` (sneak + délai ; vérifié en bytecode), le test du sneak étant refait à la main ;
+    comme `force` saute aussi `canAddPassenger`, la boucle s'arrête à la première capture (1 seul passager) ;
+  - éclatement silencieux à la mort du passager (`EntityPreRemovalEvent` d'Ars) → surcharge de `removePassenger`
+    (`Entity#setRemoved` fixe la raison du retrait puis appelle `stopRiding`, vérifié en bytecode) ;
+  - passager « mouillé » (`EntityMixin` : `isInWaterRainOrBubble`) → **non repris** (Mixin) ; l'effet Soaked n'est pas porté ;
+  - position du passager : `getPassengerRidingPosition` (1.21) → `positionRider` (1.20.1) : item 0.25 au-dessus, sinon à l'origine ;
+  - rendu : le shader `worldEntityIcon` d'Ars 1.21 n'existe pas en 4.12.7 → `RenderType.entityTranslucent` (vanilla),
+    même quad, même échelle, mêmes images ;
+  - `ParticleUtil.inRange` (classe client d'Ars, importe `ClientLevel`) n'est pas utilisé côté commun → tirage aléatoire équivalent.
+- Recette : tags `c:feathers` / `c:` → `forge:feathers` ; `ars_nouveau:water_essence` existe en 4.12.7.
+
 ## 5. Méthodes réutilisables
 ### 5.1 Conversion des modèles GeckoLib → JSON vanilla
 Les items officiels 1.21 utilisent GeckoLib (`models/item/<item>.json` avec `"parent": "builtin/entity"` +
@@ -206,13 +241,11 @@ configs « not correct. Correcting », `Failed to load properties from file: ser
 `Reflective setAccessible` (bruit de debug).
 
 ## 6. Prochaines actions exactes
-1. **Glyphe Bubble** (effet) + `BubbleEntity` : lire `common/spell/effect/EffectBubble.java`, `common/entity/BubbleEntity.java`
-   (~250 lignes, `Projectile` + `GeoEntity`), son renderer/modèle GeckoLib, `ModEntities` (enregistrement), la recette
-   et la lang de la branche `main`. Prévoir : enregistrement d'un `EntityType` (`DeferredRegister<EntityType<?>>`),
-   renderer client sans GeckoLib, glyphe via `Glyphs.register()` (§4.4). L'effet « mouillé » officiel
-   (`EntityMixin` : `SOAKED_EFFECT` / passager d'une bulle) passe par un Mixin → à omettre (le signaler).
-2. Tests en jeu par l'utilisateur (`TESTS.md`) ; corriger tout écart constaté.
-3. Ensuite seulement, avec accord de l'utilisateur : éléments ⚠️ de `BACKPORT_ROADMAP.md`.
+1. **Tests en jeu par l'utilisateur** (`TESTS.md`), en priorité les rendus jamais vus (canne P1/P5, glyphes G1, bulle
+   B2/B4, contour G6) ; corriger tout écart constaté.
+2. **Demander à l'utilisateur** quels éléments ⚠️ de `BACKPORT_ROADMAP.md` il veut (Windburst adapté, Source Lamp,
+   grilles, hanging sign, Ars Stencil, bateau, plush, Decor Blossom) — assets officiels désormais autorisés.
+3. Avant une release publique : choisir une version (`mod_version`, actuellement 0.1.0), relire `README.md`.
 
 ## 7. Environnement
 - Java **Temurin 17.0.20.1+1**, Gradle 8.8 (wrapper), ForgeGradle 6.0.54, Forge 1.20.1-47.4.10, mappings `official`,
@@ -225,7 +258,8 @@ configs « not correct. Correcting », `Failed to load properties from file: ser
 
 ## 8. Blocages / points à vérifier
 1. **Tests en jeu** (utilisateur) : `TESTS.md` — Gauntlet 5–36 (priorité 13–17, 25, 27, 31, 36), Mob Jar J1–J11,
-   canne P1–P12, Pantomime G1–G9. Rendu en jeu de la canne (rangée/lancée) et de l'icône du glyphe **non encore vus**.
+   canne P1–P12, Pantomime G1–G9, Bubble B1–B12. Rendus jamais vus en jeu : canne (rangée/lancée), icônes des glyphes,
+   bulle, contour Sensitive.
 2. JEI absent de l'environnement de dev (test 3) : l'ajouter en `runtimeOnly` si besoin (demander avant).
 3. Erreurs connues : aucune.
 

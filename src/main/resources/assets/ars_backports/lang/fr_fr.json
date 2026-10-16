@@ -4,5 +4,8 @@
   "item.ars_backports.enchanters_fishing_rod": "Canne à pêche d'enchanteur",
   "ars_backports.fishing_rod.invalid": "Sort invalide. La Canne à pêche d'enchanteur n'accepte que les Effets et les Améliorations.",
   "ars_backports.glyph_name.glyph_pantomime": "Pantomime",
-  "ars_backports.glyph_desc.glyph_pantomime": "Applique les sorts au bloc le plus proche dans votre ligne de mire. Atténuation réduit la distance, Amplification l'augmente. Sensible met en évidence le bloc sélectionné."
+  "ars_backports.glyph_desc.glyph_pantomime": "Applique les sorts au bloc le plus proche dans votre ligne de mire. Atténuation réduit la distance, Amplification l'augmente. Sensible met en évidence le bloc sélectionné.",
+  "ars_backports.glyph_name.glyph_bubble": "Bulle",
+  "ars_backports.glyph_desc.glyph_bubble": "Capture les créatures et entités qu'elle touche et les fait flotter vers le haut. Si la bulle existe depuis au moins un tick, blesser l'entité emprisonnée la fait éclater, infligeant des dégâts supplémentaires à l'entité à l'intérieur. Prolongation et Amplification augmentent la durée et les dégâts de la bulle.",
+  "entity.ars_backports.bubble": "Bulle"
 }

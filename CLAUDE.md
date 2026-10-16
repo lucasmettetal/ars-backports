@@ -45,7 +45,11 @@ Ne jamais commencer un élément ⚠️ ou ❌ de la roadmap sans accord explici
 
 ## Conventions de code
 - casters à Touch implicite (Gauntlet, canne) : implémenter `item/TouchCaster` (refus des formes, préfixe Touch sur une copie, tooltip)
-- code client uniquement dans `client/` (`@Mod.EventBusSubscriber(value = Dist.CLIENT)`)
+- code client uniquement dans `client/` (`@Mod.EventBusSubscriber(value = Dist.CLIENT)`) ; renderers d'entités enregistrés
+  dans `ClientSetup.onRegisterRenderers` ; ne pas appeler de classe client d'Ars (ex. `client.particle.ParticleUtil`) depuis le code commun
+- entités : `registry/ModEntities` (`DeferredRegister<EntityType<?>>`), classes dans `entity/`
+- ce que le 1.21 fait par Mixin ou événement interne d'Ars : chercher d'abord un équivalent Forge/vanilla (surcharge,
+  événement Forge, `startRiding(..., true)`…) et vérifier en bytecode ; sinon omettre et le documenter (jamais de Mixin sans accord)
 - Mob Jar : un `JarBehavior` par mob dans `mobjar/`, enregistré dans `JarBehaviors.register()`
 - glyphes : une classe par glyphe dans `glyph/`, enregistrée dans `Glyphs.register()` (appelé dans le constructeur du mod) ;
   id `ars_backports:glyph_<nom>` ; fournir modèle, texture, `glyph_name`/`glyph_desc` (en_us + fr_fr), recette `ars_nouveau:glyph`

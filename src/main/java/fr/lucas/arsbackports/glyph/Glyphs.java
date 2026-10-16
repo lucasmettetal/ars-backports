@@ -12,5 +12,6 @@ public final class Glyphs {
     // active mod container, and Ars creates the glyph items from this registry when items are registered.
     public static void register() {
         GlyphRegistry.registerSpell(MethodPantomime.INSTANCE);
+        GlyphRegistry.registerSpell(EffectBubble.INSTANCE);
     }
 }

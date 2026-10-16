@@ -1,11 +1,13 @@
 package fr.lucas.arsbackports.client;
 
 import fr.lucas.arsbackports.ArsBackports;
+import fr.lucas.arsbackports.registry.ModEntities;
 import fr.lucas.arsbackports.registry.ModItems;
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.common.ToolActions;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -16,6 +18,11 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 public final class ClientSetup {
 
     private ClientSetup() {
+    }
+
+    @SubscribeEvent
+    public static void onRegisterRenderers(EntityRenderersEvent.RegisterRenderers event) {
+        event.registerEntityRenderer(ModEntities.BUBBLE.get(), BubbleRenderer::new);
     }
 
     @SubscribeEvent

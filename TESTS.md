@@ -126,3 +126,22 @@ Mise en place : `/give @p ars_backports:glyph_pantomime`, livre de sorts, Scribe
 | G7 | Effets visuels | lancer | burst de particules + lumière brève au point ciblé | [ ] |
 | G8 | Refus | inscrire `Pantomime → Break` sur le Gantelet ou la canne | refusé (c'est une forme) | [ ] |
 | G9 | Serveur dédié | G3, G5, G6 sur `runServer` | identique, aucun crash serveur | [ ] |
+
+# Checklist de tests — glyphe Bubble
+
+Mise en place : `/give @p ars_backports:glyph_bubble`, livre de sorts. Sorts conseillés : `Projectile → Bubble`, `Touch → Bubble`.
+
+| # | Test | Procédure | Attendu | État |
+|---|---|---|---|---|
+| B1 | Glyphe visible | onglet des glyphes, livre | « Glyph of Bubble » / « Glyphe de Bulle », icône officielle | [ ] |
+| B2 | Bulle sur un bloc | `Projectile → Bubble` contre un mur/sol | bulle visible (face caméra) qui monte lentement, disparaît après ~5 s avec animation d'éclatement + son | [ ] |
+| B3 | Capture | `Projectile → Bubble` sur un mob | le mob est enfermé et monte ; bulle agrandie selon la taille du mob | [ ] |
+| B4 | Éclatement par dégâts | frapper le mob capturé (après 1 tick) | la bulle éclate, le mob subit les dégâts + 5 bonus (+2 par Amplify) | [ ] |
+| B5 | Bulle vide | frapper une bulle vide | elle éclate sans son d'attaque | [ ] |
+| B6 | Capture au passage | lancer une bulle sur un bloc, faire passer un mob dedans | le mob est capturé | [ ] |
+| B7 | Sneak | s'accroupir dans une bulle vide | le joueur n'est pas capturé | [ ] |
+| B8 | Sortie | sortir d'une bulle (sneak) | pas recapturé par la même bulle | [ ] |
+| B9 | Extend Time / Duration Down | ajouter les augments | durée plus longue / plus courte | [ ] |
+| B10 | Mort du passager | tuer le mob capturé (ex. dans le vide / lave sous la bulle) | la bulle éclate | [ ] |
+| B11 | Blacklist | viser un boss (Wither) ou un projectile | pas de capture | [ ] |
+| B12 | Serveur dédié + multijoueur | B2–B4 sur `runServer`, deux joueurs | bulle visible par les deux, aucun crash | [ ] |
